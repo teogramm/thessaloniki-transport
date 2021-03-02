@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/nav_graph" app:startDestination="@id/homeFragment">
+
+    <fragment android:id="@+id/onboardingFragment"
+              android:name="xyz.teogramm.thessalonikitransit.fragments.OnboardingFragment"
+              android:label="OnboardingFragment">
+        <action android:id="@+id/action_onboardingFragment_to_homeFragment" app:destination="@id/homeFragment"/>
+    </fragment>
+    <fragment android:id="@+id/homeFragment" android:name="xyz.teogramm.thessalonikitransit.fragments.home.HomeFragment"
+              android:label="HomeFragment">
+        <action android:id="@+id/action_homeFragment_to_lineDisplayFragment" app:destination="@id/lineDisplayFragment"/>
+    </fragment>
+    <fragment android:id="@+id/lineDisplayFragment"
+              android:name="xyz.teogramm.thessalonikitransit.fragments.LineDisplayFragment"
+              android:label="LineDisplayFragment"/>
+</navigation>

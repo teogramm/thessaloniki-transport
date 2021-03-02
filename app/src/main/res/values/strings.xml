@@ -1,0 +1,18 @@
+<resources>
+    <!--  TODO: Organize these by fragment  -->
+    <string name="app_name">Thessaloniki Transport</string>
+    <string name="welcomeTitle">Welcome to OASTH Bus</string>
+    <string name="waitConfigure">Please wait while we configure the app</string>
+    <string name="getStarted">Get Started</string>
+    <string name="lines">Lines</string>
+    <string name="home">Home</string>
+    <string name="notifications">Notifications</string>
+    <string name="stopWithPlaceholder">Stop: %1$s</string>
+    <string name="stop">Home</string>
+    <string name="towards_with_placeholder">Towards: %1$s</string>
+
+    <string name="search_hint">Search lines and stops</string>
+
+    <string name="preferenceFileName" translatable="false">xyz.teogramm.thessalonikitransit.prefs</string>
+    <string name="preferenceDbInitializedKey" translatable="false">dbinit</string>
+</resources>

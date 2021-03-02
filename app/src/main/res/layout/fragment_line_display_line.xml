@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   xmlns:tools="http://schemas.android.com/tools"
+                                   android:orientation="vertical"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:id="@+id/cardView" app:cardUseCompatPadding="true">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/constraintLayout"
+            android:animateLayoutChanges="true">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lineNumber" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="8dp"
+                tools:text="7" android:fontFamily="sans-serif" android:textFontWeight="450" android:textSize="24sp"
+                android:layout_marginTop="16dp"
+        />
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/lineName" app:layout_constraintStart_toEndOf="@+id/lineNumber"
+                android:layout_marginStart="8dp"
+                tools:text="ΑΓ. ΙΩΑΝΝΗΣ - ΠΑΝΕΠΙΣΤΗΜΙΟ"
+                android:fontFamily="sans-serif-thin" app:layout_constraintTop_toTopOf="@+id/lineNumber"
+                app:layout_constraintBottom_toBottomOf="@+id/lineNumber"
+                app:layout_constraintEnd_toStartOf="@+id/imageView" android:layout_marginEnd="8dp"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"
+                android:id="@+id/imageView"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
+                android:contentDescription="Drop Down Arrow" app:layout_constraintBottom_toBottomOf="@+id/lineName"
+                app:layout_constraintTop_toTopOf="@+id/lineName"
+                tools:srcCompat="@drawable/ic_baseline_arrow_drop_down_24"/>
+        <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:id="@+id/view" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/lineNumber"
+                android:layout_marginTop="16dp" android:background="@color/colorPrimaryDark"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/routeRecyclerView"
+                app:layout_constraintHorizontal_bias="0.0" app:layout_constraintTop_toBottomOf="@+id/view"
+                android:layout_marginTop="4dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
