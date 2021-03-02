@@ -9,7 +9,7 @@ import xyz.teogramm.thessalonikitransit.repositories.StaticDataRepository
 import javax.inject.Inject;
 
 /**
- * ViewModel containing all lines and their routes. Is meant to be used with
+ * ViewModel for displaying all lines and their routes. Is meant to be used with
  * [xyz.teogramm.thessalonikitransit.fragments.LineDisplayFragment].
  */
 @HiltViewModel

@@ -13,19 +13,52 @@ import xyz.teogramm.thessalonikitransit.databinding.FragmentLineDisplayLineBindi
  */
 class LineRecyclerViewAdapter(private val linesWithRoutes: List<LineWithRoutes>):
     RecyclerView.Adapter<LineRecyclerViewAdapter.LineViewHolder>() {
+
+    /**
+     * Set keeping line numbers of all [LineViewHolder]s that the user has expanded. When the routes of a line are
+     * expanded, the number of the line is put in the Set and it is removed if the user toggles the routes again.
+     * When a holder is created, the route RecyclerView is set to open or closed, depending on whether the line id
+     * for the line is in this set.
+     */
+    private val openedLinesPositions = HashSet<String>()
+
     class LineViewHolder(binding: FragmentLineDisplayLineBinding): RecyclerView.ViewHolder(binding.root) {
         private val numberTextView = binding.lineNumber
         private val lineNameTextView = binding.lineName
         private val nestedRecyclerView = binding.routeRecyclerView
 
-        fun bind(line: LineWithRoutes) {
+        /**
+         * @param routesVisible If true the route RecyclerView is set to visible, else is set to gone.
+         */
+        fun bind(line: LineWithRoutes, routesVisible: Boolean) {
             numberTextView.text = line.line.number
             lineNameTextView.text = line.line.nameEL
 
+            if(routesVisible) {
+                nestedRecyclerView.visibility = View.VISIBLE
+            } else{
+                nestedRecyclerView.visibility = View.GONE
+            }
             nestedRecyclerView.layoutManager = LinearLayoutManager(itemView.context,LinearLayout.VERTICAL,false)
             nestedRecyclerView.adapter = RouteRecyclerViewAdapter(line.routes)
-            // Don't know why this is required, but it doesn't show if you set it in the layout XML
-            nestedRecyclerView.visibility = View.VISIBLE
+        }
+
+        /**
+         * Toggles visibility of RecyclerView containing
+         */
+        fun toggleRoutesVisibility() {
+            if(nestedRecyclerView.visibility == View.VISIBLE) {
+                nestedRecyclerView.visibility = View.GONE
+            } else{
+                nestedRecyclerView.visibility = View.VISIBLE
+            }
+        }
+
+        /**
+         * Sets the route RecyclerView to the [View.GONE] state.
+         */
+        fun hideRoutes() {
+            nestedRecyclerView.visibility = View.GONE
         }
     }
 
@@ -35,10 +68,24 @@ class LineRecyclerViewAdapter(private val linesWithRoutes: List<LineWithRoutes>)
     }
 
     override fun onBindViewHolder(holder: LineViewHolder, position: Int) {
+        val lineNumber = linesWithRoutes[position].line.number
         holder.itemView.setOnClickListener {
+            holder.toggleRoutesVisibility()
+            if( lineNumber in openedLinesPositions) {
+                openedLinesPositions.remove(lineNumber)
+            } else {
+                openedLinesPositions.add(lineNumber)
+            }
             notifyItemChanged(position)
         }
-        holder.bind(linesWithRoutes[position])
+        holder.bind(linesWithRoutes[position], lineNumber in openedLinesPositions)
+    }
+
+    override fun onViewRecycled(holder: LineViewHolder) {
+        super.onViewRecycled(holder)
+        // When a holder is recycled we want the recycler view reset to the GONE state, it will be opened/closed
+        // in the onBindView function
+        holder.hideRoutes()
     }
 
     override fun getItemCount(): Int {
