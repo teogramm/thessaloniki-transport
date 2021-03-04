@@ -1,19 +1,25 @@
 package xyz.teogramm.thessalonikitransit.recyclerViews.lines
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import xyz.teogramm.thessalonikitransit.R
-import xyz.teogramm.thessalonikitransit.database.transit.entities.Route
+import xyz.teogramm.thessalonikitransit.database.transit.entities.Line
 import xyz.teogramm.thessalonikitransit.database.transit.entities.RouteWithLastStop
-import xyz.teogramm.thessalonikitransit.database.transit.entities.Stop
-import xyz.teogramm.thessalonikitransit.databinding.FragmentLineDisplayRouteBinding
-import xyz.teogramm.thessalonikitransit.viewModels.LinesRoutesViewModel
+import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewDisplayLineRouteBinding
+import xyz.teogramm.thessalonikitransit.fragments.LineDisplayFragment
+import xyz.teogramm.thessalonikitransit.viewModels.RouteViewModel
 
-class RouteRecyclerViewAdapter(private val routes: List<RouteWithLastStop>):
+/**
+ * Displays all routes for one line.
+ * @param line Line the routes belong to.
+ */
+class RouteRecyclerViewAdapter(private val routes: List<RouteWithLastStop>, private val line: Line):
         RecyclerView.Adapter<RouteRecyclerViewAdapter.RouteViewHolder>() {
-    class RouteViewHolder(private val binding: FragmentLineDisplayRouteBinding): RecyclerView.ViewHolder(binding.root) {
+    class RouteViewHolder(private val binding: RecyclerviewDisplayLineRouteBinding): RecyclerView.ViewHolder(binding.root) {
         private val officialTitleTextView = binding.officialTitle
         private val directionTextView = binding.direction
 
@@ -26,12 +32,19 @@ class RouteRecyclerViewAdapter(private val routes: List<RouteWithLastStop>):
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteViewHolder {
-        val binding = FragmentLineDisplayRouteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = RecyclerviewDisplayLineRouteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RouteViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RouteViewHolder, position: Int) {
         holder.bindView(routes[position])
+
+        holder.itemView.setOnClickListener {
+            val currentFragment  = FragmentManager.findFragment<LineDisplayFragment>(holder.itemView)
+            val routeViewModel: RouteViewModel by currentFragment.activityViewModels()
+            routeViewModel.setSelected(line, routes[position].route)
+            currentFragment.findNavController().navigate(R.id.action_lineDisplayFragment_to_routeDetailsFragment)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -53,10 +53,8 @@ interface TransitDao {
      * Queries
      */
     @Transaction
-    @Query(
-        "SELECT Stop.* FROM RouteStop INNER JOIN Stop ON RouteStop.stopId = Stop.stopId WHERE " +
-            "RouteStop.routeId = :routeId ORDER BY RouteStop.stopIndex"
-    )
+    @Query("SELECT Stop.* FROM RouteStop INNER JOIN Stop ON RouteStop.stopId = Stop.stopId WHERE " +
+            "RouteStop.routeId = :routeId ORDER BY RouteStop.stopIndex")
     fun getRouteStopsOrdered(routeId: Int): List<Stop>
 
     @Transaction

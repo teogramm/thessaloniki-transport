@@ -66,9 +66,6 @@ class OnboardingFragment : Fragment() {
             DatabaseInitializer.setDbInitialized(context)
             // Remove flag to keep screen on
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            // Restore bottom navigation
-            val bottomBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-            bottomBar.visibility = View.VISIBLE
             // Navigate to home fragment
             findNavController().navigate(R.id.action_onboardingFragment_to_homeFragment)
         }

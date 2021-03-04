@@ -5,7 +5,7 @@ import kotlinx.coroutines.withContext
 import xyz.teogramm.oasth.Oasth
 import xyz.teogramm.thessalonikitransit.database.transit.DatabaseInitializer
 import xyz.teogramm.thessalonikitransit.database.transit.TransitDatabase
-import xyz.teogramm.thessalonikitransit.database.transit.entities.LineWithRoutes
+import xyz.teogramm.thessalonikitransit.database.transit.entities.*
 import javax.inject.Inject
 
 /**
@@ -37,5 +37,13 @@ class StaticDataRepository @Inject constructor(
 
     suspend fun getAllLinesRoutesWithLastStops() : List<LineWithRoutes> = withContext(Dispatchers.IO) {
         return@withContext transitDao.getAllLinesWithRoutes()
+    }
+
+    suspend fun getAllStopsForRoute(route: Route): List<Stop> = withContext(Dispatchers.IO) {
+        return@withContext transitDao.getRouteStopsOrdered(route.routeId)
+    }
+
+    suspend fun getLineSchedules(line: Line): List<ScheduleWithCalendarAndTimes> = withContext(Dispatchers.IO) {
+        return@withContext transitDao.getLineSchedulesWithTimes(line.lineId)
     }
 }

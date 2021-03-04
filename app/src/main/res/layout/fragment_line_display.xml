@@ -6,5 +6,5 @@
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:id="@+id/recyclerView"
-            tools:listitem="@layout/fragment_line_display_line"/>
+            tools:listitem="@layout/recyclerview_display_line"/>
 </FrameLayout>

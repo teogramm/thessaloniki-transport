@@ -24,15 +24,24 @@ class MainActivity : AppCompatActivity() {
         val navGraph = graphInflater.inflate(R.navigation.nav_graph)
         val navController = navHostFragment.navController
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when(destination.id){
+                R.id.onboardingFragment, R.id.routeDetailsFragment -> hideBottomNavigation()
+                else-> showBottomNavigation()
+            }
+        }
         if(!DatabaseInitializer.isDbInitialized(applicationContext)) {
-            hideBottomNavigation()
             navGraph.startDestination = R.id.onboardingFragment
             navController.graph = navGraph
         }
         NavigationUI.setupWithNavController(bottomNavigationView,navController)
     }
 
-    private fun hideBottomNavigation(){
+    private fun hideBottomNavigation() {
         findViewById<BottomNavigationView>(R.id.bottomNavigationView).visibility = View.GONE
+    }
+
+    private fun showBottomNavigation() {
+        findViewById<BottomNavigationView>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
 }

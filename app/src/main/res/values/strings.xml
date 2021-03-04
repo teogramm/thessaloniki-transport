@@ -11,6 +11,10 @@
     <string name="stop">Home</string>
     <string name="towards_with_placeholder">Towards: %1$s</string>
 
+    <string name="stops_tab">Stops</string>
+    <string name="map_tab">Map</string>
+    <string name="schedule_tab">Schedule</string>
+
     <string name="search_hint">Search lines and stops</string>
 
     <string name="preferenceFileName" translatable="false">xyz.teogramm.thessalonikitransit.prefs</string>

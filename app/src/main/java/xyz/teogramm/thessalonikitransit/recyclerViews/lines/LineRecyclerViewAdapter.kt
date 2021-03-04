@@ -1,4 +1,5 @@
 package xyz.teogramm.thessalonikitransit.recyclerViews.lines
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,7 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import xyz.teogramm.thessalonikitransit.database.transit.entities.LineWithRoutes
-import xyz.teogramm.thessalonikitransit.databinding.FragmentLineDisplayLineBinding
+import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewDisplayLineBinding
 
 /**
  * Displays a line and its routes.
@@ -22,7 +23,7 @@ class LineRecyclerViewAdapter(private val linesWithRoutes: List<LineWithRoutes>)
      */
     private val openedLinesPositions = HashSet<String>()
 
-    class LineViewHolder(binding: FragmentLineDisplayLineBinding): RecyclerView.ViewHolder(binding.root) {
+    class LineViewHolder(binding: RecyclerviewDisplayLineBinding): RecyclerView.ViewHolder(binding.root) {
         private val numberTextView = binding.lineNumber
         private val lineNameTextView = binding.lineName
         private val nestedRecyclerView = binding.routeRecyclerView
@@ -30,9 +31,9 @@ class LineRecyclerViewAdapter(private val linesWithRoutes: List<LineWithRoutes>)
         /**
          * @param routesVisible If true the route RecyclerView is set to visible, else is set to gone.
          */
-        fun bind(line: LineWithRoutes, routesVisible: Boolean) {
-            numberTextView.text = line.line.number
-            lineNameTextView.text = line.line.nameEL
+        fun bind(lineWithRoutes: LineWithRoutes, routesVisible: Boolean) {
+            numberTextView.text = lineWithRoutes.line.number
+            lineNameTextView.text = lineWithRoutes.line.nameEL
 
             if(routesVisible) {
                 nestedRecyclerView.visibility = View.VISIBLE
@@ -40,7 +41,7 @@ class LineRecyclerViewAdapter(private val linesWithRoutes: List<LineWithRoutes>)
                 nestedRecyclerView.visibility = View.GONE
             }
             nestedRecyclerView.layoutManager = LinearLayoutManager(itemView.context,LinearLayout.VERTICAL,false)
-            nestedRecyclerView.adapter = RouteRecyclerViewAdapter(line.routes)
+            nestedRecyclerView.adapter = RouteRecyclerViewAdapter(lineWithRoutes.routes, lineWithRoutes.line)
         }
 
         /**
@@ -63,7 +64,7 @@ class LineRecyclerViewAdapter(private val linesWithRoutes: List<LineWithRoutes>)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LineViewHolder {
-        val lineBinding = FragmentLineDisplayLineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val lineBinding = RecyclerviewDisplayLineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return LineViewHolder(lineBinding)
     }
 
