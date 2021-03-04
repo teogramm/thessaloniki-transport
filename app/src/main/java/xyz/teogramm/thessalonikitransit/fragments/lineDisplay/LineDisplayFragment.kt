@@ -1,4 +1,4 @@
-package xyz.teogramm.thessalonikitransit.fragments
+package xyz.teogramm.thessalonikitransit.fragments.lineDisplay
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import xyz.teogramm.thessalonikitransit.databinding.FragmentLineDisplayBinding
-import xyz.teogramm.thessalonikitransit.recyclerViews.lines.LineRecyclerViewAdapter
 import xyz.teogramm.thessalonikitransit.viewModels.LinesRoutesViewModel
 
 /**

@@ -1,4 +1,4 @@
-package xyz.teogramm.thessalonikitransit.recyclerViews.lines
+package xyz.teogramm.thessalonikitransit.fragments.lineDisplay
 
 import android.view.LayoutInflater
 import android.view.View

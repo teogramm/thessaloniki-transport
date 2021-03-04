@@ -15,7 +15,7 @@
         <action android:id="@+id/action_homeFragment_to_lineDisplayFragment" app:destination="@id/lineDisplayFragment"/>
     </fragment>
     <fragment android:id="@+id/lineDisplayFragment"
-              android:name="xyz.teogramm.thessalonikitransit.fragments.LineDisplayFragment"
+              android:name="xyz.teogramm.thessalonikitransit.fragments.lineDisplay.LineDisplayFragment"
               android:label="LineDisplayFragment"
               tools:layout="@layout/fragment_line_display">
         <action android:id="@+id/action_lineDisplayFragment_to_routeDetailsFragment"

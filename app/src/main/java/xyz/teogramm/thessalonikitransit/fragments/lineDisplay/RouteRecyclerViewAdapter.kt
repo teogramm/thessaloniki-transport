@@ -1,4 +1,4 @@
-package xyz.teogramm.thessalonikitransit.recyclerViews.lines
+package xyz.teogramm.thessalonikitransit.fragments.lineDisplay
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,6 @@ import xyz.teogramm.thessalonikitransit.R
 import xyz.teogramm.thessalonikitransit.database.transit.entities.Line
 import xyz.teogramm.thessalonikitransit.database.transit.entities.RouteWithLastStop
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewDisplayLineRouteBinding
-import xyz.teogramm.thessalonikitransit.fragments.LineDisplayFragment
 import xyz.teogramm.thessalonikitransit.viewModels.RouteViewModel
 
 /**
