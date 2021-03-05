@@ -1,6 +1,7 @@
 package xyz.teogramm.thessalonikitransit.database.transit.entities
 
 import androidx.room.*
+import xyz.teogramm.thessalonikitransit.database.transit.TransitConverters
 import java.time.LocalTime
 
 /**
@@ -44,15 +45,16 @@ data class ScheduleTime(
 
 /**
  * Indicates the direction of a schedule entry.
+ * Circular routes have only outbound times
  */
 enum class ScheduleEntryDirection{
     OUTBOUND, RETURN
 }
 
 /**
- * A schedule along with calendar information and a list of times contained in the schedule.
+ * A schedule along with calendar information and a list of [ScheduleTime] objects that are included in the schedule.
  */
-data class ScheduleWithCalendarAndTimes(
+data class ScheduleWithTimes(
     @Embedded val schedule: Schedule,
     @Relation(
         parentColumn = "calendarId",

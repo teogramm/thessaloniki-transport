@@ -52,6 +52,10 @@ interface TransitDao {
     /*
      * Queries
      */
+
+    /**
+     * Gets all the stops of a route, in ascending order.
+     */
     @Transaction
     @Query("SELECT Stop.* FROM RouteStop INNER JOIN Stop ON RouteStop.stopId = Stop.stopId WHERE " +
             "RouteStop.routeId = :routeId ORDER BY RouteStop.stopIndex")
@@ -61,14 +65,18 @@ interface TransitDao {
     @Query("SELECT * FROM MasterLine")
     fun getMasterLinesWithLines(): List<MasterLineWithLines>
 
+    /**
+     * Gets all lines included in the database and the routes associated with each one.
+     */
     @Transaction
     @Query("SELECT * FROM Line ORDER BY Line.number")
     fun getAllLinesWithRoutes(): List<LineWithRoutes>
 
-
+    /**
+     * Gets a list of [ScheduleWithTimes] objects for the given [lineId]. Includes only departure times for the given
+     * [direction].
+     */
     @Transaction
     @Query("SELECT * FROM Schedule WHERE lineId = :lineId")
-    fun getLineSchedulesWithTimes(lineId: Int): List<ScheduleWithCalendarAndTimes>
-
-
+    fun getLineSchedulesWithTimes(lineId: Int): List<ScheduleWithTimes>
 }

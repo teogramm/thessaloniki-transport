@@ -28,12 +28,6 @@ class StaticDataRepository @Inject constructor(
         }
     }
 
-    /**
-     * Returns a list of all lines with their routes.
-     */
-    suspend fun getAllLines(): List<LineWithRoutes> = withContext(Dispatchers.IO) {
-        return@withContext transitDao.getAllLinesWithRoutes()
-    }
 
     suspend fun getAllLinesRoutesWithLastStops() : List<LineWithRoutes> = withContext(Dispatchers.IO) {
         return@withContext transitDao.getAllLinesWithRoutes()
@@ -43,7 +37,9 @@ class StaticDataRepository @Inject constructor(
         return@withContext transitDao.getRouteStopsOrdered(route.routeId)
     }
 
-    suspend fun getLineSchedules(line: Line): List<ScheduleWithCalendarAndTimes> = withContext(Dispatchers.IO) {
-        return@withContext transitDao.getLineSchedulesWithTimes(line.lineId)
-    }
+    suspend fun getLineSchedulesForDirection(line: Line, direction: ScheduleEntryDirection): List<ScheduleWithTimes> =
+        // TODO: Filter times based on direction, either here or directly on the DAO.
+        withContext(Dispatchers.IO) {
+            return@withContext transitDao.getLineSchedulesWithTimes(line.lineId)
+        }
 }

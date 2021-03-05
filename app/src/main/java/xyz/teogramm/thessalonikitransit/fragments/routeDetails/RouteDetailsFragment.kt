@@ -26,7 +26,7 @@ class RouteDetailsFragment: Fragment() {
         binding.pager.adapter = RouteViewPagerAdapter(this)
         // TabLayout tab text
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-            tab.text = getTabText(position)
+            tab.text = RouteViewPagerAdapter.getTabText(requireContext(), position)
         }.attach()
 
         binding.lineNumber.text = routeViewModel.getSelectedLineNumber()
@@ -39,15 +39,5 @@ class RouteDetailsFragment: Fragment() {
         _binding = null
     }
 
-    /**
-     * Returns the text shown for tab at the given position
-     */
-    private fun getTabText(position: Int): String {
-        return when (position){
-            1 -> getString(R.string.stops_tab)
-            2 -> getString(R.string.map_tab)
-            3 -> getString(R.string.schedule_tab)
-            else -> "error"
-        }
-    }
+
 }

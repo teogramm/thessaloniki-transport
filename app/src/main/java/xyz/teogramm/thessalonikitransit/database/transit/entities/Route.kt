@@ -11,6 +11,12 @@ import androidx.room.*
         Index(value = ["lineId"])
     ]
 )
+/**
+ * [type] field means:
+ * 1 - outbound route
+ * 2 - return route
+ * 3 - circular route
+ */
 class Route(
     @PrimaryKey var routeId: Int,
     val nameEL: String,

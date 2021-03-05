@@ -1,4 +1,4 @@
-package xyz.teogramm.thessalonikitransit.fragments.routeDetails
+package xyz.teogramm.thessalonikitransit.fragments.routeDetails.stopList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
