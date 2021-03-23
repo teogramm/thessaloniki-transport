@@ -14,9 +14,9 @@
             android:textAppearance="@style/OnboardingTitle"/>
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
-            android:layout_height="wrap_content" app:layout_constraintStart_toEndOf="@+id/hourNumber"
+            android:layout_height="0dp" app:layout_constraintStart_toEndOf="@+id/hourNumber"
             app:layout_constraintTop_toTopOf="@+id/hourNumber"
             app:layout_constraintBottom_toBottomOf="@+id/hourNumber" android:layout_marginStart="16dp"
             android:id="@+id/departureTimesRecyclerView" app:layout_constraintEnd_toEndOf="parent"
-    />
+            tools:listitem="@layout/recyclerview_schedule_time"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import xyz.teogramm.thessalonikitransit.R
-import xyz.teogramm.thessalonikitransit.databinding.FragmentOnboardingBinding
 import xyz.teogramm.thessalonikitransit.databinding.FragmentRouteDetailsBinding
 import xyz.teogramm.thessalonikitransit.viewModels.RouteViewModel
 
@@ -28,7 +27,14 @@ class RouteDetailsFragment: Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             tab.text = RouteViewPagerAdapter.getTabText(requireContext(), position)
         }.attach()
-
+        // Enable swiping only on stops tab (position 0)
+        binding.pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                // Disable viewpager swiping for map and schedule widget
+                binding.pager.isUserInputEnabled = position == 0
+            }
+        })
         binding.lineNumber.text = routeViewModel.getSelectedLineNumber()
         binding.routeName.text = routeViewModel.getSelectedRouteName()
         return binding.root

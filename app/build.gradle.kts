@@ -55,7 +55,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
 
-    implementation("androidx.fragment:fragment-ktx:1.3.0")
+    implementation("androidx.fragment:fragment-ktx:1.3.1")
 
 
     /*----------------------------------------
@@ -75,7 +75,7 @@ dependencies {
      ----------------------------------------*/
     val hiltVersion = "2.32-alpha"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
-
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 
     /*----------------------------------------
