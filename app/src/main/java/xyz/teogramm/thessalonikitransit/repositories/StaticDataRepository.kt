@@ -40,6 +40,10 @@ class StaticDataRepository @Inject constructor(
     suspend fun getLineSchedulesForDirection(line: Line, direction: ScheduleEntryDirection): List<ScheduleWithTimes> =
         // TODO: Filter times based on direction, either here or directly on the DAO.
         withContext(Dispatchers.IO) {
-            return@withContext transitDao.getLineSchedulesWithTimes(line.lineId)
+            val schedulesWithAllTimes = transitDao.getLineSchedulesWithTimes(line.lineId)
+            return@withContext schedulesWithAllTimes.map{ scheduleWithTimes ->
+                // For each schedule create a copy containing only times towards the given direction
+                scheduleWithTimes.copy(times = scheduleWithTimes.times.filter { it.direction == direction })
+            }
         }
 }

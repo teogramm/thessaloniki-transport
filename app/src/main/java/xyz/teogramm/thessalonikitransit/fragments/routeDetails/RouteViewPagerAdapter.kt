@@ -24,12 +24,13 @@ class RouteViewPagerAdapter(f: Fragment): FragmentStateAdapter(f) {
     }
 
     override fun getItemCount(): Int {
-        return 2
+        return 3
     }
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0 -> StopListFragment()
+            1 -> Fragment()
             else -> ScheduleFragment()
         }
     }
