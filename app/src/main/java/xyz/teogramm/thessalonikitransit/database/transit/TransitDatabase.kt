@@ -11,7 +11,7 @@ import xyz.teogramm.thessalonikitransit.database.transit.entities.*
         Calendar::class, Schedule::class, ScheduleTime::class, MasterLine::class,
         Line::class, Route::class, RouteStop::class, Stop::class
     ],
-    views = [RouteWithLastStop::class, LastRouteStops::class]
+    views = [RouteWithLastStop::class, LastRouteStops::class, StopsWithLines::class]
 )
 @TypeConverters(TransitConverters::class)
 abstract class TransitDatabase : RoomDatabase() {

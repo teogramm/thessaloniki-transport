@@ -23,5 +23,12 @@
     </fragment>
     <fragment android:id="@+id/routeDetailsFragment"
               android:name="xyz.teogramm.thessalonikitransit.fragments.routeDetails.RouteDetailsFragment"
-              android:label="RouteDetailsFragment"/>
+              android:label="RouteDetailsFragment"
+              tools:layout="@layout/fragment_route_details">
+        <action android:id="@+id/action_routeDetailsFragment_to_stopDetailsFragment"
+                app:destination="@id/stopDetailsFragment"/>
+    </fragment>
+    <fragment android:id="@+id/stopDetailsFragment"
+              android:name="xyz.teogramm.thessalonikitransit.fragments.stopDetails.StopDetailsFragment"
+              android:label="StopDetailsFragment"/>
 </navigation>

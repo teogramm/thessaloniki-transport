@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id){
-                R.id.onboardingFragment, R.id.routeDetailsFragment -> hideBottomNavigation()
+                R.id.onboardingFragment, R.id.routeDetailsFragment, R.id.stopDetailsFragment -> hideBottomNavigation()
                 else-> showBottomNavigation()
             }
         }

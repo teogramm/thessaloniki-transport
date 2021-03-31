@@ -73,10 +73,13 @@ interface TransitDao {
     fun getAllLinesWithRoutes(): List<LineWithRoutes>
 
     /**
-     * Gets a list of [ScheduleWithTimes] objects for the given [lineId]. Includes only departure times for the given
-     * [direction].
+     * Gets a list of [ScheduleWithTimes] objects for the given [lineId].
      */
     @Transaction
     @Query("SELECT * FROM Schedule WHERE lineId = :lineId")
     fun getLineSchedulesWithTimes(lineId: Int): List<ScheduleWithTimes>
+
+    @Transaction
+    @Query("SELECT * FROM StopsWithLines WHERE stopId = :stopId")
+    fun getLinesForStop(stopId: Int): List<Line>
 }
