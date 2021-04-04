@@ -46,7 +46,13 @@ class StaticDataRepository @Inject constructor(
             }
         }
 
-    suspend fun getLinesForStop(stop: Stop): List<Line> = withContext(Dispatchers.IO) {
-        return@withContext transitDao.getLinesForStop(stop.stopId)
+    /**
+     * Returns the routes that pass through the stop with the given stopId along with the lines they belong to.
+     */
+    suspend fun getRoutesWithLinesForStop(stop: Stop): List<Pair<Route,Line>> = withContext(Dispatchers.IO) {
+        return@withContext transitDao.getLinesForStop(stop.stopId).map {
+            // Create a new route with the returned information
+            Pair(Route(it.routeId,it.routeNameEL,it.routeNameEN,it.routeType,it.line.lineId),it.line)
+        }
     }
 }

@@ -80,6 +80,7 @@ interface TransitDao {
     fun getLineSchedulesWithTimes(lineId: Int): List<ScheduleWithTimes>
 
     @Transaction
-    @Query("SELECT * FROM StopsWithLines WHERE stopId = :stopId")
-    fun getLinesForStop(stopId: Int): List<Line>
+    @Query("SELECT * FROM StopsWithRoutesAndLines WHERE stopId = :stopId")
+    fun getLinesForStop(stopId: Int): List<StopsWithRoutesAndLines>
+
 }
