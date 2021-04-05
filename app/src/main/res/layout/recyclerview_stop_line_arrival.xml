@@ -17,7 +17,8 @@
             android:layout_height="wrap_content" android:id="@+id/lineName"
             app:layout_constraintStart_toEndOf="@+id/lineNumber"
             tools:text="ΑΓ ΠΑΝΤΕΛΕΗΜΩΝ - ΒΕΝΙΖΕΛΟΥ"
-            app:layout_constraintBaseline_toBaselineOf="@+id/lineNumber" android:layout_marginStart="16dp"/>
+            app:layout_constraintBaseline_toBaselineOf="@+id/lineNumber"
+            app:layout_constraintEnd_toStartOf="@+id/arrivalTime"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/arrivalTime"

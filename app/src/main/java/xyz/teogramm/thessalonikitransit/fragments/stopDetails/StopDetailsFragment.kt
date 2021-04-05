@@ -18,13 +18,16 @@ class StopDetailsFragment: Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentStopDetailsBinding.inflate(inflater, container, false)
 
         val arrivalTimesRecyclerView = binding.timeRecyclerView
         arrivalTimesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        stopViewModel.getStopLines().observe(viewLifecycleOwner,{ lines ->
-            arrivalTimesRecyclerView.adapter = ArrivalTimesRecyclerViewAdapter(lines)
+        stopViewModel.getStop().observe(viewLifecycleOwner,{ stop ->
+            binding.stopName.text = stop.nameEL
+        })
+        stopViewModel.getStopLinesWithArrivalTimes().observe(viewLifecycleOwner,{ linesWithArrivalTimes ->
+            arrivalTimesRecyclerView.adapter = ArrivalTimesRecyclerViewAdapter(linesWithArrivalTimes)
         })
         return  binding.root
     }
