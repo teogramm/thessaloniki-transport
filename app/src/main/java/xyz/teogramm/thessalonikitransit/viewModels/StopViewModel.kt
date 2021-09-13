@@ -27,7 +27,8 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
         stop.value = aStop
         viewModelScope.launch {
             // Assign routes to lines
-            // Create a new LineWithArrivalTime object for each line passing through the stop
+            // Create a new LineWithArrivalTime object for each route passing through the stop.
+            // This way we can handle multiple routes of the same line.
             val routesWithLines = async {
                 staticRepository.getRoutesWithLinesForStop(aStop)
             }
@@ -51,6 +52,9 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
     }
 
     // TODO: Improve code quality.
+    /**
+     * This method retrieves arrival times for the routes that pass through the stop.
+     */
     fun updateTimes() {
         viewModelScope.launch {
             // Get times from the API

@@ -11,12 +11,16 @@ class LiveDataRepository @Inject constructor() {
      */
     suspend fun getStopArrivals(stopId: Int): Map<Int,Int> {
         return withContext(Dispatchers.IO) {
-            val arrivals = OasthLive.getStopArrivals(stopId)
-            val arrivalsMap = HashMap<Int, Int>()
-            arrivals.forEach { arrival ->
-                arrivalsMap[arrival.routeCode] = arrival.estimatedTime
+            try {
+                val arrivals = OasthLive.getStopArrivals(stopId)
+                val arrivalsMap = HashMap<Int, Int>()
+                arrivals.forEach { arrival ->
+                    arrivalsMap[arrival.routeCode] = arrival.estimatedTime
+                }
+                return@withContext arrivalsMap
+            } catch (e: Throwable){
+                return@withContext mapOf()
             }
-            return@withContext arrivalsMap
         }
     }
 }

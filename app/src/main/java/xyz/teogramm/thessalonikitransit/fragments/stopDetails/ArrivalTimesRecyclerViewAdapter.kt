@@ -7,10 +7,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import xyz.teogramm.thessalonikitransit.database.transit.entities.Line
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewStopLineArrivalBinding
 import xyz.teogramm.thessalonikitransit.viewModels.LineWithArrivalTime
@@ -60,6 +56,9 @@ class ArrivalTimesRecyclerViewAdapter(private var lines: List<LineWithArrivalTim
     }
 }
 
+/**
+ * ViewHolder that can act as a LifecycleOwner 
+ */
 abstract class LifecycleViewHolder(itemView: View) :
     RecyclerView.ViewHolder(itemView), LifecycleOwner {
 

@@ -10,6 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import xyz.teogramm.thessalonikitransit.databinding.FragmentStopDetailsBinding
 import xyz.teogramm.thessalonikitransit.viewModels.StopViewModel
 
+/**
+ * Fragment that shows details about a stop.
+ * Currently, this includes:
+ *  * Routes passing through the stop with the names and numbers of the lines they belong to.
+ *  * Bus arrival times, if there is network connectivity.
+ * In the future it may include:
+ *  * Stop location on map.
+ *  * Direction/last stop for each route, so multiple routes of the same line can be disambiguated.
+ */
 class StopDetailsFragment: Fragment() {
     private val stopViewModel: StopViewModel by activityViewModels()
 
@@ -23,12 +32,12 @@ class StopDetailsFragment: Fragment() {
 
         val arrivalTimesRecyclerView = binding.timeRecyclerView
         arrivalTimesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        stopViewModel.getStop().observe(viewLifecycleOwner,{ stop ->
+        stopViewModel.getStop().observe(viewLifecycleOwner) { stop ->
             binding.stopName.text = stop.nameEL
-        })
-        stopViewModel.getStopLinesWithArrivalTimes().observe(viewLifecycleOwner,{ linesWithArrivalTimes ->
+        }
+        stopViewModel.getStopLinesWithArrivalTimes().observe(viewLifecycleOwner) { linesWithArrivalTimes ->
             arrivalTimesRecyclerView.adapter = ArrivalTimesRecyclerViewAdapter(linesWithArrivalTimes)
-        })
+        }
         return  binding.root
     }
 
