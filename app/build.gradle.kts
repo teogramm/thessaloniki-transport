@@ -34,6 +34,14 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
+
+        create("release-gmaps") {
+            initWith(getByName("release"))
+        }
+
+        create("release-oss") {
+            initWith(getByName("release"))
+        }
     }
 
     buildFeatures {
@@ -47,21 +55,21 @@ dependencies {
      ----------------------------------------*/
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(kotlin("stdlib", KotlinCompilerVersion.VERSION))
-    implementation("androidx.core:core-ktx:1.6.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
-    testImplementation("junit:junit:4.13")
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
 
-    implementation("androidx.fragment:fragment-ktx:1.3.6")
+    implementation("androidx.fragment:fragment-ktx:1.4.0")
 
 
     /*----------------------------------------
                   Room database
      ----------------------------------------*/
-    val roomVersion = "2.2.6"
+    val roomVersion = "2.4.0"
     implementation("androidx.room:room-runtime:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -73,7 +81,7 @@ dependencies {
     /*----------------------------------------
               Hilt Dependency Injection
      ----------------------------------------*/
-    val hiltVersion = "2.32-alpha"
+    val hiltVersion = "2.40.5"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
@@ -81,20 +89,20 @@ dependencies {
     /*----------------------------------------
             Material Design
     ----------------------------------------*/
-    api("com.google.android.material:material:1.3.0")
+    api("com.google.android.material:material:1.4.0")
 
     /*----------------------------------------
                    Android KTX
     ----------------------------------------*/
-    implementation("androidx.core:core-ktx:1.3.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
 
     /*----------------------------------------
              Navigation Components
     ----------------------------------------*/
-    val navVersion = "2.3.3"
+    val navVersion = "2.3.5"
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 
