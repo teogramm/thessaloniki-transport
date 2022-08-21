@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         if(!DatabaseInitializer.isDbInitialized(applicationContext)) {
-            navGraph.startDestination = R.id.onboardingFragment
+            navGraph.setStartDestination(R.id.onboardingFragment)
             navController.graph = navGraph
         }
         NavigationUI.setupWithNavController(bottomNavigationView,navController)

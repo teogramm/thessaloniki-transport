@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import xyz.teogramm.thessalonikitransit.database.transit.entities.*
+import xyz.teogramm.thessalonikitransit.repositories.LiveDataRepository
 import xyz.teogramm.thessalonikitransit.repositories.StaticDataRepository
 import java.time.LocalTime
 import javax.inject.Inject
@@ -16,12 +17,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class RouteViewModel @Inject constructor(
-    private val staticRepository: StaticDataRepository
+    private val staticRepository: StaticDataRepository,
+    private val liveRepository: LiveDataRepository
 ): ViewModel(){
     private val selectedLine = MutableLiveData<Line>()
     private val selectedRoute = MutableLiveData<Route>()
     val schedules = MutableLiveData<List<ScheduleWithGroupedTimes>>()
     val stops = MutableLiveData<List<Stop>>()
+    // Maybe include route id to avoid redownloading. maybe find a way to cache route points.
+    private val points = MutableLiveData<List<Pair<Double, Double>>>()
 
     /**
      * Updates the view model with information about the given [Line] and [Route].
@@ -57,6 +61,28 @@ class RouteViewModel @Inject constructor(
      */
     fun getSelectedRouteName(): String {
         return selectedRoute.value?.nameEL ?: ""
+    }
+
+    fun getRoutePoints(): LiveData<List<Pair<Double, Double>>>{
+        points.postValue(emptyList())
+        fetchPoints()
+        return points
+    }
+
+    private fun fetchPoints() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                val fetchedPoints = selectedRoute.value?.let { liveRepository.getRoutePoints(it.routeId) }
+                if(fetchedPoints != null){
+                    points.postValue(fetchedPoints.map { coordinate ->
+                        Pair(coordinate.latitude, coordinate.longitude)
+                    })
+                }else{
+                    points.postValue(listOf())
+                }
+
+            }
+        }
     }
 
     /**

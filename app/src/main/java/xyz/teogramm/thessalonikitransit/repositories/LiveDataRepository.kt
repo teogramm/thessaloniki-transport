@@ -3,6 +3,7 @@ package xyz.teogramm.thessalonikitransit.repositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import xyz.teogramm.oasth.OasthLive
+import xyz.teogramm.oasth.live.Coordinates
 import javax.inject.Inject
 
 class LiveDataRepository @Inject constructor() {
@@ -21,6 +22,12 @@ class LiveDataRepository @Inject constructor() {
             } catch (e: Throwable){
                 return@withContext mapOf()
             }
+        }
+    }
+
+    suspend fun getRoutePoints(routeId: Int): List<Coordinates> {
+        return withContext(Dispatchers.IO) {
+            return@withContext OasthLive.getRoutePoints(routeId)
         }
     }
 }

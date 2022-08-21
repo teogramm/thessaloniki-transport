@@ -6,9 +6,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.4")
-        classpath(kotlin("gradle-plugin", version = "1.4.30"))
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.40.5")
+        classpath("com.android.tools.build:gradle:7.2.2")
+        classpath(kotlin("gradle-plugin", version = "1.7.10"))
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.43.2")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle.kts files
