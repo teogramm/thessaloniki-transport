@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import xyz.teogramm.thessalonikitransit.R
 import xyz.teogramm.thessalonikitransit.fragments.routeDetails.schedule.ScheduleFragment
 import xyz.teogramm.thessalonikitransit.fragments.routeDetails.stopList.StopListFragment
+import xyz.teogramm.thessalonikitransit.fragments.routeDetails.stopMap.StopMapFragment
 
 class RouteViewPagerAdapter(f: Fragment): FragmentStateAdapter(f) {
 
@@ -30,7 +31,7 @@ class RouteViewPagerAdapter(f: Fragment): FragmentStateAdapter(f) {
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0 -> StopListFragment()
-            1 -> Fragment()
+            1 -> StopMapFragment()
             else -> ScheduleFragment()
         }
     }

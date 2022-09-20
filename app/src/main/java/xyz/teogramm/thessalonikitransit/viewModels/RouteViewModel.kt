@@ -36,6 +36,8 @@ class RouteViewModel @Inject constructor(
         // Do I/O in the background
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
+                // Empty the points list
+                points.postValue(emptyList())
                 stops.postValue(staticRepository.getAllStopsForRoute(route))
                 // If route is outbound or circular get the outbound times, else get the return times.
                 val direction = if (route.type == 2) {
@@ -64,7 +66,6 @@ class RouteViewModel @Inject constructor(
     }
 
     fun getRoutePoints(): LiveData<List<Pair<Double, Double>>>{
-        points.postValue(emptyList())
         fetchPoints()
         return points
     }

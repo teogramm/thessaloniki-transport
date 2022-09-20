@@ -1,3 +1,4 @@
+import com.android.builder.core.BuilderConstants
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 plugins {
@@ -28,11 +29,11 @@ android {
         }
 
         create("gmaps") {
-            initWith(getByName("release"))
+            initWith(getByName("debug"))
         }
 
         create("oss") {
-            initWith(getByName("release"))
+            initWith(getByName("debug"))
         }
     }
 
@@ -96,4 +97,9 @@ dependencies {
     val navVersion = "2.5.2"
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+
+    /*----------------------------------------
+             Google Maps Build Dependencies
+    ----------------------------------------*/
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
 }
