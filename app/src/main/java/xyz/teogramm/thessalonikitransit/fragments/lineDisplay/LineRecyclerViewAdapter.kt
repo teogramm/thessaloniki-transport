@@ -40,7 +40,7 @@ class LineRecyclerViewAdapter(private val linesWithRoutes: List<LineWithRoutes>)
             } else{
                 nestedRecyclerView.visibility = View.GONE
             }
-            nestedRecyclerView.layoutManager = LinearLayoutManager(itemView.context,LinearLayout.VERTICAL,false)
+            nestedRecyclerView.layoutManager = LinearLayoutManager(itemView.context,RecyclerView.VERTICAL,false)
             nestedRecyclerView.adapter = RouteRecyclerViewAdapter(lineWithRoutes.routes, lineWithRoutes.line)
         }
 
