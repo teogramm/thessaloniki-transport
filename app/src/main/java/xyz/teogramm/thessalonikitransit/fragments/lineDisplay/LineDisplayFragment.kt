@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentLineDisplayBinding
 import xyz.teogramm.thessalonikitransit.viewModels.LinesRoutesViewModel

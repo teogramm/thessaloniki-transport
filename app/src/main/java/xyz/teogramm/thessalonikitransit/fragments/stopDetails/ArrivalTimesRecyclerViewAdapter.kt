@@ -2,41 +2,46 @@ package xyz.teogramm.thessalonikitransit.fragments.stopDetails
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.View
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.RecyclerView
 import xyz.teogramm.thessalonikitransit.database.transit.entities.Line
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewStopLineArrivalBinding
-import xyz.teogramm.thessalonikitransit.viewModels.LineWithArrivalTime
 
+/**
+ * @param arrivalTimes Maps each line id to its arrival time
+ */
 // TODO: Improve code quality, sort lines by arrival time.
-class ArrivalTimesRecyclerViewAdapter(private var lines: List<LineWithArrivalTime>):
+class ArrivalTimesRecyclerViewAdapter(private var lines: List<Line>):
         RecyclerView.Adapter<ArrivalTimesRecyclerViewAdapter.LineArrivalTimesViewHolder>() {
-    class LineArrivalTimesViewHolder(binding: RecyclerviewStopLineArrivalBinding):LifecycleViewHolder(binding.root) {
+
+    private var arrivalTimes = emptyMap<Int,Int>()
+    private val lineIdToViewHolderPosition = hashMapOf<Int, Int>()
+
+    class LineArrivalTimesViewHolder(binding: RecyclerviewStopLineArrivalBinding): RecyclerView.ViewHolder(binding.root) {
         private val lineNumberTextView = binding.lineNumber
         private val lineNameTextView = binding.lineName
         private val arrivalTimeTextView = binding.arrivalTime
 
-        fun bindView(line: Line) {
+        fun bindView(line: Line, arrivalTime: Int?) {
             lineNumberTextView.text = line.number
             lineNameTextView.text = line.nameEL
+            arrivalTime?.let { setTime(arrivalTime) }
         }
 
         fun setTime(arrivalTime: Int) {
-            arrivalTimeTextView.text = "${arrivalTime}'"
+            arrivalTimeTextView.text = "$arrivalTime"
+        }
+
+        fun resetTime() {
+            arrivalTimeTextView.text = ""
         }
     }
 
-    override fun onViewAttachedToWindow(holder: LineArrivalTimesViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        holder.onAppear()
-    }
-
-    override fun onViewDetachedFromWindow(holder: LineArrivalTimesViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        holder.onDisappear()
+    fun updateArrivalTimes(times: Map<Int,Int>){
+        arrivalTimes = times
+        times.forEach{ (lineId, _) ->
+            // If a line is not visible it might not be in the map
+            lineIdToViewHolderPosition[lineId]?.let { notifyItemChanged(it) }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LineArrivalTimesViewHolder {
@@ -45,39 +50,18 @@ class ArrivalTimesRecyclerViewAdapter(private var lines: List<LineWithArrivalTim
     }
 
     override fun onBindViewHolder(holder: LineArrivalTimesViewHolder, position: Int) {
-        holder.bindView(lines[position].line)
-        lines[position].getArrivalTimes().observeForever {
-            holder.setTime(it.first())
-        }
+        val lineId = lines[position].lineId
+        lineIdToViewHolderPosition[lineId] = holder.adapterPosition
+        // Check if time exists for this line
+        arrivalTimes[lineId]?.let { holder.setTime(it) }
+        holder.bindView(lines[position], arrivalTimes[lineId])
+    }
+
+    override fun onViewRecycled(holder: LineArrivalTimesViewHolder) {
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {
         return lines.size
     }
-}
-
-/**
- * ViewHolder that can act as a LifecycleOwner 
- */
-abstract class LifecycleViewHolder(itemView: View) :
-    RecyclerView.ViewHolder(itemView), LifecycleOwner {
-
-    private val lifecycleRegistry = LifecycleRegistry(this)
-
-    init {
-        lifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
-    }
-
-    fun onAppear() {
-        lifecycleRegistry.currentState = Lifecycle.State.CREATED
-    }
-
-    fun onDisappear() {
-        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
-    }
-
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
-    }
-
 }

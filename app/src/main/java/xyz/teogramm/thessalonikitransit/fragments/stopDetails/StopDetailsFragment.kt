@@ -6,7 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentStopDetailsBinding
 import xyz.teogramm.thessalonikitransit.viewModels.StopViewModel
 
@@ -32,11 +37,24 @@ class StopDetailsFragment: Fragment() {
 
         val arrivalTimesRecyclerView = binding.timeRecyclerView
         arrivalTimesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        stopViewModel.getStop().observe(viewLifecycleOwner) { stop ->
-            binding.stopName.text = stop.nameEL
-        }
-        stopViewModel.getStopLinesWithArrivalTimes().observe(viewLifecycleOwner) { linesWithArrivalTimes ->
-            arrivalTimesRecyclerView.adapter = ArrivalTimesRecyclerViewAdapter(linesWithArrivalTimes)
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                launch {
+                    stopViewModel.stop.collectLatest { stop ->
+                        binding.stopName.text = stop.nameEL
+                    }
+                }
+                launch {
+                    stopViewModel.routeIdsToLines.collectLatest { lines ->
+                        arrivalTimesRecyclerView.adapter = ArrivalTimesRecyclerViewAdapter(lines.values.toList())
+                    }
+                }
+                launch {
+                    stopViewModel.lineArrivalTimes.collect { times ->
+                        (arrivalTimesRecyclerView.adapter as ArrivalTimesRecyclerViewAdapter).updateArrivalTimes(times)
+                    }
+                }
+            }
         }
         return  binding.root
     }
