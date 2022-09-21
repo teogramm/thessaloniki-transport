@@ -2,6 +2,7 @@ package xyz.teogramm.thessalonikitransit.database.alerts
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.MapInfo
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
@@ -17,6 +18,7 @@ interface AlertsDao {
     @Query("DELETE FROM stoptime WHERE stopId = :stopId")
     fun deleteNotificationTime(stopId: Int)
 
+    @MapInfo(keyColumn = "stopId", valueColumn = "routeId")
     @Query("SELECT * FROM UserAlert GROUP BY stopId")
     fun getAllAlerts(): Map<Int, List<Int>>
 
