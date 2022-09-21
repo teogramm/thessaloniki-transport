@@ -6,8 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentLineDisplayBinding
 import xyz.teogramm.thessalonikitransit.viewModels.LinesRoutesViewModel
 
@@ -36,9 +41,13 @@ class LineDisplayFragment: Fragment() {
         val recyclerView = binding.recyclerView
         val model: LinesRoutesViewModel by viewModels()
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        model.getLinesWithRoutes().observe(viewLifecycleOwner, {
-            recyclerView.adapter = LineRecyclerViewAdapter(it)
-        })
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.CREATED){
+                model.linesWithRoutes.collect{linesWithRoutes->
+                    recyclerView.adapter = LineRecyclerViewAdapter(linesWithRoutes)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
