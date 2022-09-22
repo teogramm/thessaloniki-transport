@@ -2,7 +2,7 @@ package xyz.teogramm.thessalonikitransit.fragments.routeDetails.schedule
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewScheduleCardBinding
 import xyz.teogramm.thessalonikitransit.viewModels.ScheduleWithGroupedTimes
@@ -19,8 +19,8 @@ class ScheduleRecyclerViewAdapter(private val lineSchedules: List<ScheduleWithGr
 
         fun bindView(schedule: ScheduleWithGroupedTimes) {
             calendarNameTextView.text = schedule.calendar.nameEL
-            hourRecyclerView.layoutManager = LinearLayoutManager(itemView.context)
-            hourRecyclerView.adapter = HourRecyclerViewAdapter(schedule.groupedTimes)
+            hourRecyclerView.layoutManager = GridLayoutManager(itemView.context,6)
+            hourRecyclerView.adapter = HourRecyclerViewAdapter(schedule.times)
         }
     }
 

@@ -78,11 +78,9 @@ class RouteViewModel @Inject constructor(
         // each group
         val groupedSchedules = mutableListOf<ScheduleWithGroupedTimes>()
         ungroupedSchedules.forEach{ schedule ->
-            // When grouping, keep only the time field of each ScheduleTime
-            val groupedTimes = schedule.times.map { scheduleTimeEntry -> scheduleTimeEntry.time }.groupBy { it.hour }
-            // Then sort each time list
-            val sortedGroupedTimes = groupedTimes.mapValues { it.value.sorted() }
-            groupedSchedules.add(ScheduleWithGroupedTimes(schedule.schedule, schedule.calendar, sortedGroupedTimes))
+            // When grouping, keep only the time field of each ScheduleTime, Then sort each time list
+            val times = schedule.times.map { scheduleTimeEntry -> scheduleTimeEntry.time }.sorted()
+            groupedSchedules.add(ScheduleWithGroupedTimes(schedule.schedule, schedule.calendar, times))
         }
         return groupedSchedules.toList()
     }
@@ -94,5 +92,5 @@ class RouteViewModel @Inject constructor(
 data class ScheduleWithGroupedTimes(
     val schedule: Schedule,
     val calendar: Calendar,
-    val groupedTimes: Map<Int,List<LocalTime>>
+    val times: List<LocalTime>
 )

@@ -6,24 +6,30 @@
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent" app:cardCornerRadius="4dp" app:cardElevation="4dp">
-        <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" android:id="@+id/calendarName"
-                    app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="8dp"
-                    tools:text="ΚΥΡΙΑΚΕΣ-ΑΡΓΙΕΣ" android:textAlignment="center"/>
+                android:id="@+id/calendarName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                tools:text="ΚΥΡΙΑΚΕΣ-ΑΡΓΙΕΣ" />
+
             <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/calendarName"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="16dp"
-                    android:id="@+id/hourRecyclerView" android:layout_marginBottom="8dp"
-                    android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:id="@+id/hourRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/recyclerview_schedule_time" />
+        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </FrameLayout>
