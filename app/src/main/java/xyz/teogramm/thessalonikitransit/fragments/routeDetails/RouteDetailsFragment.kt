@@ -6,8 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentRouteDetailsBinding
 import xyz.teogramm.thessalonikitransit.viewModels.RouteViewModel
 
@@ -35,8 +40,20 @@ class RouteDetailsFragment: Fragment() {
                 binding.pager.isUserInputEnabled = position == 0
             }
         })
-        binding.lineNumber.text = routeViewModel.getSelectedLineNumber()
-        binding.routeName.text = routeViewModel.getSelectedRouteName()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                launch {
+                    routeViewModel.selectedLine.collectLatest { line ->
+                        binding.lineNumber.text = line.number
+                    }
+                }
+                launch {
+                    routeViewModel.selectedRoute.collectLatest { route ->
+                        binding.lineNumber.text = route.nameEL
+                    }
+                }
+            }
+        }
         return binding.root
     }
 

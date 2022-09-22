@@ -6,7 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentRouteDetailsScheduleBinding
 import xyz.teogramm.thessalonikitransit.viewModels.RouteViewModel
 
@@ -26,10 +31,13 @@ class ScheduleFragment: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val routeViewModel: RouteViewModel by activityViewModels()
-        routeViewModel.schedules.observe(viewLifecycleOwner, {
-            recyclerView.adapter = ScheduleRecyclerViewAdapter(it)
-        })
-
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                routeViewModel.schedules.collectLatest { schedules ->
+                    recyclerView.adapter = ScheduleRecyclerViewAdapter(schedules)
+                }
+            }
+        }
         return binding.root
     }
 

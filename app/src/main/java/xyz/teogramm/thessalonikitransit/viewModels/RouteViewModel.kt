@@ -3,6 +3,8 @@ package xyz.teogramm.thessalonikitransit.viewModels
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import xyz.teogramm.thessalonikitransit.database.transit.entities.*
@@ -20,25 +22,42 @@ class RouteViewModel @Inject constructor(
     private val staticRepository: StaticDataRepository,
     private val liveRepository: LiveDataRepository
 ): ViewModel(){
-    private val selectedLine = MutableLiveData<Line>()
-    private val selectedRoute = MutableLiveData<Route>()
-    val schedules = MutableLiveData<List<ScheduleWithGroupedTimes>>()
-    val stops = MutableLiveData<List<Stop>>()
+
+    // Populate using dummy lines and routes
+    private val _selectedLine = MutableStateFlow(Line(-500,"","","",-500))
+    private val _selectedRoute = MutableStateFlow(Route(-500,"","",0,-500))
+    val selectedLine = _selectedLine.asStateFlow()
+    val selectedRoute = _selectedRoute.asStateFlow()
+
+    private val _schedules = MutableStateFlow(emptyList<ScheduleWithGroupedTimes>())
+    val schedules = _schedules.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val stops = selectedRoute.transformLatest{ newRoute ->
+        emit(emptyList())
+        emit(staticRepository.getAllStopsForRoute(newRoute))
+    }.stateIn(
+        initialValue = emptyList(),
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly
+    )
+
     // Maybe include route id to avoid redownloading. maybe find a way to cache route points.
-    private val points = MutableLiveData<List<Pair<Double, Double>>>()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val points = selectedRoute.transformLatest{ newRoute ->
+        emit(emptyList())
+        emit(liveRepository.getRoutePoints(newRoute.routeId).map { coordinates -> Pair(coordinates.latitude,coordinates.longitude) })
+    }
 
     /**
      * Updates the view model with information about the given [Line] and [Route].
      */
     fun setSelected(line: Line, route: Route) {
-        selectedLine.value = line
-        selectedRoute.value = route
+        _selectedLine.value = line
+        _selectedRoute.value = route
         // Do I/O in the background
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
-                // Empty the points list
-                points.postValue(emptyList())
-                stops.postValue(staticRepository.getAllStopsForRoute(route))
                 // If route is outbound or circular get the outbound times, else get the return times.
                 val direction = if (route.type == 2) {
                     ScheduleEntryDirection.RETURN
@@ -46,42 +65,7 @@ class RouteViewModel @Inject constructor(
                     ScheduleEntryDirection.OUTBOUND
                 }
                 val lineSchedules = staticRepository.getLineSchedulesForDirection(line, direction)
-                schedules.postValue(getGroupedSchedules(lineSchedules))
-            }
-        }
-    }
-
-    /**
-     * @return Number of selected line, empty string if no line is selected.
-     */
-    fun getSelectedLineNumber(): String{
-        return selectedLine.value?.number ?: ""
-    }
-
-    /**
-     * @return Name of selected route, empty string if no route is selected.
-     */
-    fun getSelectedRouteName(): String {
-        return selectedRoute.value?.nameEL ?: ""
-    }
-
-    fun getRoutePoints(): LiveData<List<Pair<Double, Double>>>{
-        fetchPoints()
-        return points
-    }
-
-    private fun fetchPoints() {
-        viewModelScope.launch {
-            withContext(Dispatchers.Default) {
-                val fetchedPoints = selectedRoute.value?.let { liveRepository.getRoutePoints(it.routeId) }
-                if(fetchedPoints != null){
-                    points.postValue(fetchedPoints.map { coordinate ->
-                        Pair(coordinate.latitude, coordinate.longitude)
-                    })
-                }else{
-                    points.postValue(listOf())
-                }
-
+                _schedules.emit(getGroupedSchedules(lineSchedules))
             }
         }
     }

@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentRouteDetailsStopsBinding
 import xyz.teogramm.thessalonikitransit.viewModels.RouteViewModel
 
@@ -23,17 +28,18 @@ class StopListFragment: Fragment() {
 
         val routeViewModel: RouteViewModel by activityViewModels()
         val stopsRecyclerView = binding.stopRecyclerView
-        // Hide stops recycler view and only show it once data is ready
-        stopsRecyclerView.visibility = View.INVISIBLE
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
         // Add lines between items
         val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
         stopsRecyclerView.addItemDecoration(dividerItemDecoration)
 
-        routeViewModel.stops.observe(viewLifecycleOwner, {
-            stopsRecyclerView.adapter = StopListRecyclerViewAdapter(it)
-            stopsRecyclerView.visibility = View.VISIBLE
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                routeViewModel.stops.collectLatest { stops ->
+                    stopsRecyclerView.adapter = StopListRecyclerViewAdapter(stops)
+                }
+            }
+        }
 
         return binding.root
     }
