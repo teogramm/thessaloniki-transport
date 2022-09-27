@@ -18,12 +18,6 @@
                 android:id="@+id/progressBar"
                 android:indeterminate="true"
                 android:visibility="visible" style="@android:style/Widget.Material.ProgressBar"/>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/getStartedButton"
-                android:text="@string/getStarted" android:visibility="gone"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:textAppearance="@style/OnboardingButton" app:strokeColor="@color/colorPrimary"/>
     </FrameLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -35,19 +29,27 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/mainText"
-                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textAppearance="@style/OnboardingTitle"
-                android:textAlignment="center" android:text="@string/welcomeTitle" android:textColor="@null"/>
+            android:id="@+id/mainText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcomeTitle"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/subtitle"
-                app:layout_constraintTop_toBottomOf="@id/mainText" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textAppearance="@style/OnboardingSubtitle" android:textAlignment="center"
-                android:text="@string/waitConfigure" android:textColor="@null"/>
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/waitConfigure"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mainText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
