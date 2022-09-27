@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import xyz.teogramm.thessalonikitransit.database.transit.alerts.AlertDao
 import javax.inject.Singleton
 
 /**
@@ -24,4 +25,6 @@ object TransitDatabaseModule {
 
     @Provides
     fun provideTransitDao(db: TransitDatabase): TransitDao = db.transitDao()
+    @Provides
+    fun provideAlertDao(db: TransitDatabase): AlertDao = db.alertDao()
 }
