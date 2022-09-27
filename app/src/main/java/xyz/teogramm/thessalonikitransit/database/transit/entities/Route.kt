@@ -12,6 +12,8 @@ import androidx.room.*
     ]
 )
 /**
+ * A route is essentially a series of stops. Each route belongs to a specific line.
+ *
  * [type] field means:
  * 1 - outbound route
  * 2 - return route
@@ -42,6 +44,19 @@ data class RouteStop(
     val routeId: Int,
     val stopId: Int,
     val stopIndex: Int
+)
+
+/**
+ * Contains a route along with the line it belongs to.
+ */
+data class RouteWithLine(
+    @Embedded val route: Route,
+    @Relation(
+        entity = Line::class,
+        parentColumn = "lineId",
+        entityColumn = "lineId"
+    )
+    val line:Line
 )
 
 /**
