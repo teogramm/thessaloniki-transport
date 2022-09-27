@@ -26,24 +26,21 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
      */
     val stop = _stop.asStateFlow()
 
-
     /**
      * This initially fetches lines and routes from the database. Emits [RouteWithLineAndArrivalTime] objects, without
      * populating the arrival time field.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _routesWithLines = _stop.transformLatest { stop ->
-        viewModelScope.launch {
-            emit(emptyList())
-            val routesWithLines = withContext(Dispatchers.IO) {
-                staticRepository.getRoutesWithLinesForStop(stop)
-            }
-            emit(routesWithLines.map { RouteWithLineAndArrivalTime(it.first, it.second, null) }
-                .sortedBy { it.line.number })
+        emit(emptyList())
+        val routesWithLines = withContext(Dispatchers.IO) {
+            staticRepository.getRoutesWithLinesForStop(stop)
         }
+        emit(routesWithLines.map { RouteWithLineAndArrivalTime(it.first, it.second, null) }
+                .sortedBy { it.line.number })
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        started = SharingStarted.WhileSubscribed(0,0),
         initialValue = emptyList()
     )
 
@@ -55,18 +52,20 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
     /**
      * Map that contains arrival times for the routes passing through the current stop.
      */
-    private val _arrivalTimes = combineTransform(_stop, _wantUpdate) { stop, want ->
+    private val _arrivalTimes = combineTransform(_stop,_wantUpdate) { stop, want ->
         if (want) {
             try {
                 emit(liveDataRepository.getStopArrivals(stop.stopId))
                 _wantUpdate.value = false
             } catch (e: Exception) {
-                TODO("Network error")
+//                TODO("Network error")
+                emit(emptyMap())
             }
         }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        // Reset when all subscribers
+        started = SharingStarted.WhileSubscribed(0,0),
         initialValue = emptyMap()
     )
 
@@ -80,7 +79,11 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
         emit(updated)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        // Disable caching on all flows as it causes the UI to briefly display the previously cached routes when
+        // changing stops. Enabling caching on either one of the other flows causes [routesWithLineAndArrivalTimes]
+        // to emit the previous values. This happens because when the StopDetailsFragment subscribes to the flow,
+        // it immediately posts a new value using the cached values of the other flows.
+        started = SharingStarted.WhileSubscribed(0,0),
         initialValue = emptyList()
     )
 
@@ -95,8 +98,8 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
      * Select a new stop for the ViewModel
      */
     fun setStop(s: Stop){
+        clear()
         viewModelScope.launch {
-            clear()
             _stop.emit(s)
         }
     }

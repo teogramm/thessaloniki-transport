@@ -1,7 +1,7 @@
 package xyz.teogramm.thessalonikitransit.fragments.stopDetails
 
 import android.os.Bundle
-import android.util.Log
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +11,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentStopDetailsBinding
 import xyz.teogramm.thessalonikitransit.viewModels.StopViewModel
+
 
 /**
  * Fragment that shows details about a stop.
@@ -46,8 +47,11 @@ class StopDetailsFragment: Fragment() {
                     }
                 }
                 launch {
-                    stopViewModel.routesWithLineAndArrivalTimes.collectLatest { routes ->
+                    stopViewModel.routesWithLineAndArrivalTimes.collectLatest{ routes ->
+                        // https://stackoverflow.com/questions/43458146/diffutil-in-recycleview-making-it-autoscroll-if-a-new-item-is-added
+                        val recyclerViewState = (arrivalTimesRecyclerView.layoutManager as LinearLayoutManager).onSaveInstanceState()
                         (arrivalTimesRecyclerView.adapter as ArrivalTimesRecyclerViewAdapter).setItems(routes)
+                        (arrivalTimesRecyclerView.layoutManager as LinearLayoutManager).onRestoreInstanceState(recyclerViewState)
                     }
                 }
             }

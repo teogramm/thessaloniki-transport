@@ -39,7 +39,7 @@ class RouteViewModel @Inject constructor(
     }.stateIn(
         initialValue = emptyList(),
         scope = viewModelScope,
-        started = SharingStarted.Eagerly
+        started = SharingStarted.WhileSubscribed()
     )
 
     // Maybe include route id to avoid redownloading. maybe find a way to cache route points.

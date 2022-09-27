@@ -1,10 +1,12 @@
 package xyz.teogramm.thessalonikitransit.fragments.stopDetails
 
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import xyz.teogramm.thessalonikitransit.database.transit.entities.Line
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewStopLineArrivalBinding
+
 
 class ArrivalTimesRecyclerViewAdapter(private var routes: List<RouteWithLineAndArrivalTime>):
         RecyclerView.Adapter<ArrivalTimesRecyclerViewAdapter.LineArrivalTimesViewHolder>() {
@@ -21,13 +23,20 @@ class ArrivalTimesRecyclerViewAdapter(private var routes: List<RouteWithLineAndA
             lineNameTextView.text = route.line.nameEL
             routeTextView.text = route.route.nameEL
             // TODO: Show all arrival times
-            arrivalTimeTextView.text = route.arrivalTimes?.min()?.toString() ?: "-"
+            setTime(route.arrivalTimes)
+        }
+
+        fun setTime(times: List<Int>?){
+            arrivalTimeTextView.text = times?.min()?.toString() ?: "-"
         }
     }
 
     fun setItems(newRoutes: List<RouteWithLineAndArrivalTime>){
+        val diffCallback = RouteWithLineAndArrivalTimeDiffCallback(this.routes, newRoutes)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
         routes = newRoutes
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LineArrivalTimesViewHolder {
@@ -39,8 +48,14 @@ class ArrivalTimesRecyclerViewAdapter(private var routes: List<RouteWithLineAndA
         holder.bindView(routes[position])
     }
 
-    override fun onViewRecycled(holder: LineArrivalTimesViewHolder) {
-        super.onViewRecycled(holder)
+    override fun onBindViewHolder(holder: LineArrivalTimesViewHolder, position: Int, payloads: MutableList<Any>) {
+        if(payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        }else{
+            if(payloads[0] == true){
+                holder.setTime(routes[position].arrivalTimes)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
