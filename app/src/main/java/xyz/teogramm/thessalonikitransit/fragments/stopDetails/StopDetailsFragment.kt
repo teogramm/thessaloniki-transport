@@ -1,6 +1,7 @@
 package xyz.teogramm.thessalonikitransit.fragments.stopDetails
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,6 @@ import xyz.teogramm.thessalonikitransit.viewModels.StopViewModel
  * Currently, this includes:
  *  * Routes passing through the stop with the names and numbers of the lines they belong to.
  *  * Bus arrival times, if there is network connectivity.
- * In the future it may include:
  *  * Stop location on map.
  *  * Direction/last stop for each route, so multiple routes of the same line can be disambiguated.
  */
@@ -37,6 +37,7 @@ class StopDetailsFragment: Fragment() {
 
         val arrivalTimesRecyclerView = binding.timeRecyclerView
         arrivalTimesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        arrivalTimesRecyclerView.adapter = ArrivalTimesRecyclerViewAdapter(emptyList())
         viewLifecycleOwner.lifecycleScope.launch{
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 launch {
@@ -45,13 +46,8 @@ class StopDetailsFragment: Fragment() {
                     }
                 }
                 launch {
-                    stopViewModel.routeIdsToLines.collectLatest { lines ->
-                        arrivalTimesRecyclerView.adapter = ArrivalTimesRecyclerViewAdapter(lines.values.toList())
-                    }
-                }
-                launch {
-                    stopViewModel.lineArrivalTimes.collect { times ->
-                        (arrivalTimesRecyclerView.adapter as ArrivalTimesRecyclerViewAdapter).updateArrivalTimes(times)
+                    stopViewModel.routesWithLineAndArrivalTime.collectLatest { routes ->
+                        (arrivalTimesRecyclerView.adapter as ArrivalTimesRecyclerViewAdapter).setItems(routes)
                     }
                 }
             }

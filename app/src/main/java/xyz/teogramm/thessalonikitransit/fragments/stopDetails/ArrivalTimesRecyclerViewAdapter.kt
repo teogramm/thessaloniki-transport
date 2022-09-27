@@ -6,15 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import xyz.teogramm.thessalonikitransit.database.transit.entities.Line
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewStopLineArrivalBinding
 
-/**
- * @param arrivalTimes Maps each line id to its arrival time
- */
-// TODO: Improve code quality, sort lines by arrival time.
-class ArrivalTimesRecyclerViewAdapter(private var lines: List<Line>):
+class ArrivalTimesRecyclerViewAdapter(private var routes: List<RouteWithLineAndArrivalTime>):
         RecyclerView.Adapter<ArrivalTimesRecyclerViewAdapter.LineArrivalTimesViewHolder>() {
 
-    private var arrivalTimes = emptyMap<Int,Int>()
-    private val lineIdToViewHolderPosition = hashMapOf<Int, Int>()
 
     class LineArrivalTimesViewHolder(binding: RecyclerviewStopLineArrivalBinding): RecyclerView.ViewHolder(binding.root) {
         private val lineNumberTextView = binding.lineNumber
@@ -22,27 +16,18 @@ class ArrivalTimesRecyclerViewAdapter(private var lines: List<Line>):
         private val arrivalTimeTextView = binding.arrivalTime
         private val routeTextView = binding.routeName
 
-        fun bindView(line: Line, arrivalTime: Int?) {
-            lineNumberTextView.text = line.number
-            lineNameTextView.text = line.nameEL
-            arrivalTime?.let { setTime(arrivalTime) }
-        }
-
-        fun setTime(arrivalTime: Int) {
-            arrivalTimeTextView.text = "$arrivalTime"
-        }
-
-        fun resetTime() {
-            arrivalTimeTextView.text = ""
+        fun bindView(route: RouteWithLineAndArrivalTime) {
+            lineNumberTextView.text = route.line.number
+            lineNameTextView.text = route.line.nameEL
+            routeTextView.text = route.route.nameEL
+            // TODO: Show all arrival times
+            arrivalTimeTextView.text = route.arrivalTimes?.min()?.toString() ?: "-"
         }
     }
 
-    fun updateArrivalTimes(times: Map<Int,Int>){
-        arrivalTimes = times
-        times.forEach{ (lineId, _) ->
-            // If a line is not visible it might not be in the map
-            lineIdToViewHolderPosition[lineId]?.let { notifyItemChanged(it) }
-        }
+    fun setItems(newRoutes: List<RouteWithLineAndArrivalTime>){
+        routes = newRoutes
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LineArrivalTimesViewHolder {
@@ -51,11 +36,7 @@ class ArrivalTimesRecyclerViewAdapter(private var lines: List<Line>):
     }
 
     override fun onBindViewHolder(holder: LineArrivalTimesViewHolder, position: Int) {
-        val lineId = lines[position].lineId
-        lineIdToViewHolderPosition[lineId] = holder.adapterPosition
-        // Check if time exists for this line
-        arrivalTimes[lineId]?.let { holder.setTime(it) }
-        holder.bindView(lines[position], arrivalTimes[lineId])
+        holder.bindView(routes[position])
     }
 
     override fun onViewRecycled(holder: LineArrivalTimesViewHolder) {
@@ -63,6 +44,6 @@ class ArrivalTimesRecyclerViewAdapter(private var lines: List<Line>):
     }
 
     override fun getItemCount(): Int {
-        return lines.size
+        return routes.size
     }
 }

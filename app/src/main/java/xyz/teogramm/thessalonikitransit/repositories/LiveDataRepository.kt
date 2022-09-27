@@ -10,13 +10,15 @@ class LiveDataRepository @Inject constructor() {
     /**
      * @return Map matching each routeId to the arrival time
      */
-    suspend fun getStopArrivals(stopId: Int): Map<Int,Int> {
+    suspend fun getStopArrivals(stopId: Int): Map<Int,List<Int>> {
         return withContext(Dispatchers.IO) {
             try {
                 val arrivals = OasthLive.getStopArrivals(stopId)
-                val arrivalsMap = HashMap<Int, Int>()
+                val arrivalsMap = hashMapOf<Int,MutableList<Int>>()
                 arrivals.forEach { arrival ->
-                    arrivalsMap[arrival.routeCode] = arrival.estimatedTime
+                    val list = arrivalsMap.getOrDefault(arrival.routeCode, mutableListOf())
+                    list.add(arrival.estimatedTime)
+                    arrivalsMap[arrival.routeCode] = list
                 }
                 return@withContext arrivalsMap
             } catch (e: Throwable){
