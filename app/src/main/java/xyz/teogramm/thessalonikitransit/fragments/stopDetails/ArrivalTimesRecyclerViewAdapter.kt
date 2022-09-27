@@ -20,6 +20,7 @@ class ArrivalTimesRecyclerViewAdapter(private var lines: List<Line>):
         private val lineNumberTextView = binding.lineNumber
         private val lineNameTextView = binding.lineName
         private val arrivalTimeTextView = binding.arrivalTime
+        private val routeTextView = binding.routeName
 
         fun bindView(line: Line, arrivalTime: Int?) {
             lineNumberTextView.text = line.number
