@@ -1,4 +1,3 @@
-import com.android.builder.core.BuilderConstants
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 
 plugins {
@@ -40,6 +39,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    namespace = "xyz.teogramm.thessalonikitransit"
 }
 
 dependencies {
