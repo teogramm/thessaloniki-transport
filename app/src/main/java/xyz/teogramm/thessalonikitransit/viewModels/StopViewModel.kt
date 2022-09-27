@@ -19,31 +19,27 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
                                         private val liveDataRepository: LiveDataRepository): ViewModel() {
 
     // Use a dummy stop as the initial value
-    private val _stop = MutableStateFlow(Stop(0,"","","",0,0.0,0.0))
+    private val _stop = MutableStateFlow(Stop(0, "", "", "", 0, 0.0, 0.0))
 
     /**
      * Contains the currently selected stop
      */
     val stop = _stop.asStateFlow()
 
-    /**
-     * Indicates that the line data has been fetched from the static repository and arrival data can now be fetched.
-     */
-    private var readyToFetchArrivalTimes = MutableStateFlow(false)
 
     /**
-     * This initially fetches lines and routes from the database. It emits its value so the UI can be populated and
-     * then sets [readyToFetchArrivalTimes] to true, so arrival times can be fetched.
+     * This initially fetches lines and routes from the database. Emits [RouteWithLineAndArrivalTime] objects, without
+     * populating the arrival time field.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _routesWithLines = _stop.transformLatest { stop ->
         viewModelScope.launch {
-            val routesWithLines = withContext(Dispatchers.IO){
+            emit(emptyList())
+            val routesWithLines = withContext(Dispatchers.IO) {
                 staticRepository.getRoutesWithLinesForStop(stop)
             }
             emit(routesWithLines.map { RouteWithLineAndArrivalTime(it.first, it.second, null) }
-                                        .sortedBy { it.line.number })
-            readyToFetchArrivalTimes.value = true
+                .sortedBy { it.line.number })
         }
     }.stateIn(
         scope = viewModelScope,
@@ -57,34 +53,41 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
     private val _wantUpdate = MutableStateFlow(false)
 
     /**
-     * This runs whenever [_wantUpdate], [readyToFetchArrivalTimes] or [_routesWithLines] are modified but only
-     * if [_wantUpdate] and [readyToFetchArrivalTimes] are both true, so we can ensure that the correct lines
-     * have been loaded from the database first.
+     * Map that contains arrival times for the routes passing through the current stop.
      */
-    private val _routesWithLineArrivalTimes = combineTransform(_wantUpdate, readyToFetchArrivalTimes, _routesWithLines)
-    { want, ready, routes ->
-        if (want and ready) {
-            val arrivalTimes = withContext(Dispatchers.IO) {
-                liveDataRepository.getStopArrivals(stop.value.stopId)
+    private val _arrivalTimes = combineTransform(_stop, _wantUpdate) { stop, want ->
+        if (want) {
+            try {
+                emit(liveDataRepository.getStopArrivals(stop.stopId))
+                _wantUpdate.value = false
+            } catch (e: Exception) {
+                TODO("Network error")
             }
-            val updated = routes.map { RouteWithLineAndArrivalTime(it.route,it.line, arrivalTimes[it.route.routeId]) }
-                .sortedWith(
-                    compareBy ( nullsLast()) {
-                    it.arrivalTimes?.min()
-                })
-            emit(updated)
-            _wantUpdate.value = false
         }
-    }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyMap()
+    )
 
-    @OptIn(FlowPreview::class)
-    val routesWithLineAndArrivalTime = flowOf(_routesWithLines, _routesWithLineArrivalTimes).flattenMerge()
+    /**
+     * Contains all lines passing through the stop with the latest arrival times. It's updated whenever we get new routes
+     * or new arrival times.
+     */
+    val routesWithLineAndArrivalTimes = combineTransform(_arrivalTimes, _routesWithLines) { arrivalTimes, routes ->
+        val updated = routes.map { RouteWithLineAndArrivalTime(it.route, it.line, arrivalTimes[it.route.routeId]) }
+            .sortedWith(compareBy(nullsLast()) { it.arrivalTimes?.min() })
+        emit(updated)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
 
     /**
      * Resets the ViewModel fields to prevent conflicts when changing stops.
      */
     private fun clear(){
-        readyToFetchArrivalTimes.value = false
         _wantUpdate.value = true
     }
 

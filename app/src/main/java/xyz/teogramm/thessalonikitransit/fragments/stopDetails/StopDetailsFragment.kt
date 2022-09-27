@@ -46,7 +46,7 @@ class StopDetailsFragment: Fragment() {
                     }
                 }
                 launch {
-                    stopViewModel.routesWithLineAndArrivalTime.collectLatest { routes ->
+                    stopViewModel.routesWithLineAndArrivalTimes.collectLatest { routes ->
                         (arrivalTimesRecyclerView.adapter as ArrivalTimesRecyclerViewAdapter).setItems(routes)
                     }
                 }

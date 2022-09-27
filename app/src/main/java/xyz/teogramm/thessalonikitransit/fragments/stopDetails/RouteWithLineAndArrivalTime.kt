@@ -6,5 +6,5 @@ import xyz.teogramm.thessalonikitransit.database.transit.entities.Route
 data class RouteWithLineAndArrivalTime(
     val route: Route,
     val line: Line,
-    var arrivalTimes: List<Int>?
+    val arrivalTimes: List<Int>?
 )
