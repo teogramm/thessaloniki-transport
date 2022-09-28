@@ -47,7 +47,11 @@ class RouteViewModel @Inject constructor(
     val points = selectedRoute.transformLatest{ newRoute ->
         emit(emptyList())
         emit(liveRepository.getRoutePoints(newRoute.routeId).map { coordinates -> Pair(coordinates.latitude,coordinates.longitude) })
-    }
+    }.stateIn(
+        initialValue = emptyList(),
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed()
+    )
 
     /**
      * Updates the view model with information about the given [Line] and [Route].
