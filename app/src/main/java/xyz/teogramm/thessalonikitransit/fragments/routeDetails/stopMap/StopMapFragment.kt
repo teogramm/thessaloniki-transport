@@ -42,21 +42,23 @@ class StopMapFragment: Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowCli
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 launch {
                     routeViewModel.stops.collectLatest { stops ->
-                        // See https://stackoverflow.com/questions/14828217/android-map-v2-zoom-to-show-all-the-markers
-                        val builder = LatLngBounds.builder()
-                        stops.forEach { stop ->
-                            val position = LatLng(stop.latitude, stop.longitude)
-                            val stopName = stop.nameEN
-                            val marker = p0.addMarker(MarkerOptions().position(position).title(stopName))
-                            // Keep the stop as the marker's tag
-                            marker?.tag = stop
+                        if(stops.isNotEmpty()) {
+                            // See https://stackoverflow.com/questions/14828217/android-map-v2-zoom-to-show-all-the-markers
+                            val builder = LatLngBounds.builder()
+                            stops.forEach { stop ->
+                                val position = LatLng(stop.latitude, stop.longitude)
+                                val stopName = stop.nameEN
+                                val marker = p0.addMarker(MarkerOptions().position(position).title(stopName))
+                                // Keep the stop as the marker's tag
+                                marker?.tag = stop
 
-                            builder.include(position)
+                                builder.include(position)
+                            }
+                            val bounds = builder.build()
+                            val padding = 25
+                            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                            p0.moveCamera(cameraUpdate)
                         }
-                        val bounds = builder.build()
-                        val padding = 25
-                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-                        p0.moveCamera(cameraUpdate)
                     }
                 }
                 launch {
