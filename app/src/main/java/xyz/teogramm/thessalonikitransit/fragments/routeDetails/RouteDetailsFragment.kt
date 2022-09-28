@@ -27,19 +27,6 @@ class RouteDetailsFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRouteDetailsBinding.inflate(inflater, container, false)
-        binding.pager.adapter = RouteViewPagerAdapter(this)
-        // TabLayout tab text
-        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-            tab.text = RouteViewPagerAdapter.getTabText(requireContext(), position)
-        }.attach()
-        // Enable swiping only on stops tab (position 0)
-        binding.pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                // Disable viewpager swiping for map and schedule widget
-                binding.pager.isUserInputEnabled = position == 0
-            }
-        })
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 launch {
@@ -57,10 +44,26 @@ class RouteDetailsFragment: Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.pager.adapter = RouteViewPagerAdapter(this)
+        // TabLayout tab text
+        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
+            tab.text = RouteViewPagerAdapter.getTabText(requireContext(), position)
+        }.attach()
+        // Enable swiping only on stops tab (position 0)
+        binding.pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                // Disable viewpager swiping for map and schedule widget
+                binding.pager.isUserInputEnabled = position == 0
+            }
+        })
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 
 }
