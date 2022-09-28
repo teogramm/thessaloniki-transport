@@ -29,6 +29,7 @@ class StopListFragment: Fragment() {
         val routeViewModel: RouteViewModel by activityViewModels()
         val stopsRecyclerView = binding.stopRecyclerView
         stopsRecyclerView.layoutManager = LinearLayoutManager(context)
+        stopsRecyclerView.adapter = StopListRecyclerViewAdapter(emptyList())
         // Add lines between items
         val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
         stopsRecyclerView.addItemDecoration(dividerItemDecoration)
@@ -36,7 +37,7 @@ class StopListFragment: Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 routeViewModel.stops.collectLatest { stops ->
-                    stopsRecyclerView.adapter = StopListRecyclerViewAdapter(stops)
+                    (stopsRecyclerView.adapter as StopListRecyclerViewAdapter).setStops(stops)
                 }
             }
         }

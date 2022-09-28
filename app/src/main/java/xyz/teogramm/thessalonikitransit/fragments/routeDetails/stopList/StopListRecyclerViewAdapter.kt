@@ -1,6 +1,6 @@
 package xyz.teogramm.thessalonikitransit.fragments.routeDetails.stopList
 
-import android.icu.text.Transliterator.Position
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -10,13 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import xyz.teogramm.thessalonikitransit.R
 import xyz.teogramm.thessalonikitransit.database.transit.entities.Stop
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewRouteDetailsStopBinding
-import xyz.teogramm.thessalonikitransit.fragments.lineDisplay.LineDisplayFragment
-import xyz.teogramm.thessalonikitransit.fragments.routeDetails.RouteDetailsFragment
-import xyz.teogramm.thessalonikitransit.viewModels.RouteViewModel
 import xyz.teogramm.thessalonikitransit.viewModels.StopViewModel
 
-class StopListRecyclerViewAdapter(private val stops: List<Stop>):
+class StopListRecyclerViewAdapter(stops: List<Stop>):
     RecyclerView.Adapter<StopListRecyclerViewAdapter.StopViewHolder>() {
+
+    private val stops = stops.toMutableList()
 
     class StopViewHolder(binding: RecyclerviewRouteDetailsStopBinding): RecyclerView.ViewHolder(binding.root){
         private val stopIndexTextView = binding.sequence
@@ -43,6 +42,13 @@ class StopListRecyclerViewAdapter(private val stops: List<Stop>):
             stopViewModel.setStop(stops[position])
             currentFragment.findNavController().navigate(R.id.action_routeDetailsFragment_to_stopDetailsFragment)
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setStops(newStops: List<Stop> ){
+        stops.clear()
+        stops.addAll(newStops)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {

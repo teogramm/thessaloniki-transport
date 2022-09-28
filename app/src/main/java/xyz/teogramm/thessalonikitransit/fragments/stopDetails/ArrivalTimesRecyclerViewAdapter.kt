@@ -8,9 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import xyz.teogramm.thessalonikitransit.databinding.RecyclerviewStopLineArrivalBinding
 
 
-class ArrivalTimesRecyclerViewAdapter(private var routes: List<RouteWithLineAndArrivalTime>):
+class ArrivalTimesRecyclerViewAdapter(routes: List<RouteWithLineAndArrivalTime>):
         RecyclerView.Adapter<ArrivalTimesRecyclerViewAdapter.LineArrivalTimesViewHolder>() {
 
+    private val routes = routes.toMutableList()
 
     class LineArrivalTimesViewHolder(binding: RecyclerviewStopLineArrivalBinding): RecyclerView.ViewHolder(binding.root) {
         private val lineNumberTextView = binding.lineNumber
@@ -35,7 +36,9 @@ class ArrivalTimesRecyclerViewAdapter(private var routes: List<RouteWithLineAndA
         val diffCallback = RouteWithLineAndArrivalTimeDiffCallback(this.routes, newRoutes)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-        routes = newRoutes
+        routes.clear()
+        routes.addAll(newRoutes)
+
         diffResult.dispatchUpdatesTo(this)
     }
 
