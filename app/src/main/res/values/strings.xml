@@ -19,4 +19,9 @@
 
     <string name="preferenceFileName" translatable="false">xyz.teogramm.thessalonikitransit.prefs</string>
     <string name="preferenceDbInitializedKey" translatable="false">dbinit</string>
+    <string name="notificationMinutes">Notification Minutes</string>
+    <string name="selectRoutesPrompt">Select routes to monitor</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="addNotifiaction">Add Notification</string>
 </resources>
