@@ -36,7 +36,7 @@ class RouteDetailsFragment: Fragment() {
                 }
                 launch {
                     routeViewModel.selectedRoute.collectLatest { route ->
-                        binding.lineNumber.text = route.nameEL
+                        binding.routeName.text = route.nameEL
                     }
                 }
             }
