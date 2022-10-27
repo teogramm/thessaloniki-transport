@@ -27,6 +27,10 @@ interface AlertDao {
     @Query("SELECT * FROM stop WHERE EXISTS(SELECT * FROM Alert WHERE Alert.stopId = stop.stopId)")
     fun getAllAlerts(): Flow<List<CompleteAlert>>
 
+    @Query("SELECT * FROM stop WHERE stopId = :stopId")
+    @Transaction
+    fun getStopAlerts(stopId: Int): Flow<List<CompleteAlert>>
+
     @Query("DELETE FROM StopNotificationTime WHERE stopId = :stopId")
     fun deleteNotificationTime(stopId: Int)
 
