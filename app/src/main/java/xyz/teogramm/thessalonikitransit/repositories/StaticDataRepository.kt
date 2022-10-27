@@ -49,8 +49,10 @@ class StaticDataRepository @Inject constructor(
     /**
      * Returns the routes that pass through the stop with the given stopId along with the lines they belong to.
      */
-    suspend fun getRoutesWithLinesForStop(stop: Stop): List<Pair<Route,Line>> = withContext(Dispatchers.IO) {
-        return@withContext transitDao.getLinesForStop(stop.stopId).map {
+    suspend fun getRoutesWithLinesForStop(stop: Stop): List<Pair<Route,Line>> = getRoutesWithLinesForStop(stop.stopId)
+
+    suspend fun getRoutesWithLinesForStop(stopId: Int): List<Pair<Route,Line>> = withContext(Dispatchers.IO) {
+        return@withContext transitDao.getLinesForStop(stopId).map {
             // Create a new route with the returned information
             Pair(Route(it.routeId,it.routeNameEL,it.routeNameEN,it.routeType,it.line.lineId),it.line)
         }
