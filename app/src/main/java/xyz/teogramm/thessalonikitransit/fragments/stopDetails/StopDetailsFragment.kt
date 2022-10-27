@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import xyz.teogramm.thessalonikitransit.databinding.FragmentStopDetailsBinding
+import xyz.teogramm.thessalonikitransit.fragments.alerts.CreateAlertDialog
 import xyz.teogramm.thessalonikitransit.viewModels.StopViewModel
 
 
@@ -56,6 +57,11 @@ class StopDetailsFragment: Fragment() {
                 }
             }
         }
+
+        binding.addNotificationButton.setOnClickListener{
+            CreateAlertDialog().show(childFragmentManager, null)
+        }
+
         return  binding.root
     }
 
