@@ -1,12 +1,15 @@
 package xyz.teogramm.thessalonikitransit.viewModels
 
-import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import xyz.teogramm.thessalonikitransit.database.transit.alerts.StopWithNotificationThreshold
+import xyz.teogramm.thessalonikitransit.database.transit.entities.Line
 import xyz.teogramm.thessalonikitransit.database.transit.entities.Stop
+import xyz.teogramm.thessalonikitransit.fragments.alerts.CreateAlertDialogUiState
 import xyz.teogramm.thessalonikitransit.fragments.stopDetails.RouteWithLineAndArrivalTime
+import xyz.teogramm.thessalonikitransit.repositories.AlertsRepository
 import xyz.teogramm.thessalonikitransit.repositories.LiveDataRepository
 import xyz.teogramm.thessalonikitransit.repositories.StaticDataRepository
 import javax.inject.Inject
@@ -16,7 +19,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class StopViewModel @Inject constructor(private val staticRepository: StaticDataRepository,
-                                        private val liveDataRepository: LiveDataRepository): ViewModel() {
+                                        private val liveDataRepository: LiveDataRepository,
+                                        private val alertsRepository: AlertsRepository): ViewModel() {
 
     // Use a dummy stop as the initial value
     private val _stop = MutableStateFlow(Stop(0, "", "", "", 0, 0.0, 0.0))
@@ -102,6 +106,42 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
         initialValue = emptyList()
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _stopAlerts = _stop.flatMapLatest {stop ->
+        // Transform the stop flow into a flow that emits CompleteAlert objects for this stop from the database
+        alertsRepository.getStopAlerts(stop.stopId)
+    }.transformLatest{
+        // We should only have one complete alert object since we only request information for one stop
+        if(it.size != 1){
+            throw RuntimeException("More than one CompleteAlerts object for the given stop!")
+        }
+        emit(it.first())
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = null
+    )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val alertDialogUiState = _stopAlerts.transformLatest { stopAlerts ->
+        emit(null)
+        if(stopAlerts != null) {
+            // Each stop has at most one threshold entry
+            val notificationThreshold = stopAlerts.stop.notificationThreshold.firstOrNull()
+            // Get all the lines passing through this stop. Since multiple routes might correspond to a single line
+            // make sure to remove duplicate line entries
+            val lines = _routesWithLines.first().map { it.line }.distinct()
+            // Get all lines that have alerts enabled for their routes. Set automatically de-duplicates.
+            val enabledLines = stopAlerts.routes.map { it.line }.toSet()
+            val uiState = CreateAlertDialogUiState(notificationThreshold, lines, enabledLines)
+            emit(uiState)
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = null
+    )
+
     /**
      * Resets the ViewModel fields to prevent conflicts when changing stops.
      */
@@ -120,6 +160,20 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
         }
         viewModelScope.launch {
             _stop.emit(s)
+        }
+    }
+
+    fun setStopAlerts( enabledLines: Set<Line>, notificationThreshold: Int){
+        viewModelScope.launch {
+            withContext(NonCancellable) {
+                // Maybe add stop as a parameter if stop could be changed in the meantime (between fetching the
+                // alertDialogUiState and calling setStopAlerts)
+                val routeIds = enabledLines.flatMap { line ->
+                    // Get the corresponding routes (might be one or more) for this line
+                    _routesWithLines.value.filter { it.line.lineId == line.lineId }.map { it.route.routeId }
+                }
+                alertsRepository.addAlert(_stop.value.stopId, routeIds, notificationThreshold)
+            }
         }
     }
 }
