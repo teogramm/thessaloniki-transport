@@ -19,11 +19,19 @@
 
     <string name="preferenceFileName" translatable="false">xyz.teogramm.thessalonikitransit.prefs</string>
     <string name="preferenceDbInitializedKey" translatable="false">dbinit</string>
-    <string name="notificationMinutes">Notification Minutes</string>
+    <string name="notificationMinutesPrompt">Notification Minutes</string>
     <string name="selectRoutesPrompt">Select routes to monitor</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="addNotifiaction">Add Notification</string>
     <string name="liveArrivalsNotificationChannelName">Bus Arrival Notifications</string>
     <string name="persistentNotificationChannelName">Persistent Indicator</string>
+    <string name="persistentNotificationNoData">No arrivals at the selected stops</string>
+    <string name="busArrivingDetails">%1$s arriving in %2$d at %3$s</string>
+    <string name="persistentNotificationInit">Initialising</string>
+    <string name="errorFetchingData">Error while fetching data from the internet.</string>
+    <string name="notificationArrivalTitle">Bus Arriving</string>
+    <string name="persistentNotificationCloseButtonLabel">Stop</string>
+    <string name="delete">Delete</string>
+    <string name="settings">Settings</string>
 </resources>

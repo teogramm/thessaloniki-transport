@@ -13,5 +13,6 @@ data class HomeUiState (
  */
 data class StopAlerts(
     val stop: Stop,
-    val lines: List<RouteWithLineAndArrivalTime>
+    val lines: List<RouteWithLineAndArrivalTime>,
+    val notificationTime: Int
 )

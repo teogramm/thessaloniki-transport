@@ -28,6 +28,8 @@ data class Alert (
 /**
  * Contains an alert with complete information about the stop of the alert, the route and the notification threshold
  */
+// This is bad to use since we need to do tricks to fetch all the relations
+// TODO: Don't use this outside the database, replace with a better wrapper class at the repository
 data class CompleteAlert(
     @Embedded val stop: StopWithNotificationThreshold,
     @Relation(

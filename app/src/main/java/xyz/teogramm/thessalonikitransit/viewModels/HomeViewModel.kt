@@ -25,7 +25,8 @@ class HomeViewModel @Inject constructor(private val alertsRepository: AlertsRepo
                 // Add dummy arrival times
                 // TODO: Fetch the arrival times from the foreground service
                 RouteWithLineAndArrivalTime(routeWithLine.route, routeWithLine.line, null)
-            })
+            },
+            completeAlert.stop.notificationThreshold.first())
         }
         emit(HomeUiState(stopAlerts))
     }.stateIn(

@@ -1,10 +1,16 @@
 package xyz.teogramm.thessalonikitransit.repositories
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.withContext
 import xyz.teogramm.thessalonikitransit.database.transit.TransitDatabase
 import xyz.teogramm.thessalonikitransit.database.transit.alerts.Alert
+import xyz.teogramm.thessalonikitransit.database.transit.alerts.CompleteAlert
 import xyz.teogramm.thessalonikitransit.database.transit.alerts.StopNotificationTime
 import javax.inject.Inject
 
@@ -32,7 +38,13 @@ class AlertsRepository @Inject constructor(
         alertsDao.addAlerts(newAlerts)
     }
 
+    suspend fun deleteAlerts(stopId: Int) = withContext(Dispatchers.IO + NonCancellable){
+        alertsDao.deleteStopAlerts(stopId)
+        alertsDao.deleteNotificationTime(stopId)
+    }
+
     fun getAllAlerts() = alertsDao.getAllAlerts()
-    fun getStopAlerts(stopId: Int) = alertsDao.getStopAlerts(stopId)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getStopAlerts(stopId: Int) = alertsDao.getStopAlerts(stopId).transformLatest { emit(it.first()) }
 
 }

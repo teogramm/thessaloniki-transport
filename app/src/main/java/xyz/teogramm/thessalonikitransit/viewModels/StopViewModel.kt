@@ -113,21 +113,13 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
     private val _stopAlerts = _stop.flatMapLatest {stop ->
         // Transform the stop flow into a flow that emits CompleteAlert objects for this stop from the database
         alertsRepository.getStopAlerts(stop.stopId)
-    }.transformLatest{
-        // We should only have one complete alert object since we only request information for one stop
-        if(it.size != 1){
-            throw RuntimeException("More than one CompleteAlerts object for the given stop!")
-        }
-        emit(it.first())
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = null
     )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val alertDialogUiState = _stopAlerts.combineTransform(_readyForNewStop) { stopAlerts, ready ->
-        emit(null)
         if(stopAlerts != null && ready) {
             // Each stop has at most one threshold entry
             val notificationThreshold = stopAlerts.stop.notificationThreshold.firstOrNull()
@@ -167,16 +159,27 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
     }
 
     fun setStopAlerts( enabledLines: Set<Line>, notificationThreshold: Int){
+        // Get stopId synchronously
+        val currentStopId = _stop.value.stopId
         viewModelScope.launch {
             withContext(NonCancellable) {
-                // Maybe add stop as a parameter if stop could be changed in the meantime (between fetching the
-                // alertDialogUiState and calling setStopAlerts)
                 val routeIds = enabledLines.flatMap { line ->
                     // Get the corresponding routes (might be one or more) for this line
                     _routesWithLines.value.filter { it.line.lineId == line.lineId }.map { it.route.routeId }
                 }
-                alertsRepository.addAlert(_stop.value.stopId, routeIds, notificationThreshold)
+                alertsRepository.addAlert(currentStopId, routeIds, notificationThreshold)
             }
+        }
+    }
+
+    /**
+     * Delete threshold time and all alerts for the current stop
+     */
+    fun deleteStopAlerts(){
+        // Get stopId synchronously
+        val currentStopId = _stop.value.stopId
+        viewModelScope.launch {
+            alertsRepository.deleteAlerts(currentStopId)
         }
     }
 }

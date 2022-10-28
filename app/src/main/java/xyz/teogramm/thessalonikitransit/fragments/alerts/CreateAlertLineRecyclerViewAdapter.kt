@@ -38,7 +38,7 @@ class CreateAlertLineRecyclerViewAdapter(private val lines: List<Line>,
 
     override fun onBindViewHolder(holder: LineViewHolder, position: Int) {
         val line = lines[position]
-        holder.bind(line, line in enabled)
+        holder.bind(line, enabled.contains(line))
         holder.alertEnabledCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked){
                 enabled.add(line)

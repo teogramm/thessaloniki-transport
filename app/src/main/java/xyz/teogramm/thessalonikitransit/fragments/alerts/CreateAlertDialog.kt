@@ -66,6 +66,11 @@ class CreateAlertDialog: DialogFragment() {
             this.dismiss()
         }
 
+        binding.deleteButton.setOnClickListener {
+            stopViewModel.deleteStopAlerts()
+            this.dismiss()
+        }
+
         binding.okButton.setOnClickListener {
             val enabledAlerts = (binding.alertRoutesRecyclerView.adapter as CreateAlertLineRecyclerViewAdapter)
                 .getEnabled()

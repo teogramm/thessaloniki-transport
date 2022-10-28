@@ -10,11 +10,10 @@ import xyz.teogramm.thessalonikitransit.fragments.stopDetails.ArrivalTimesRecycl
 
 /**
  * RecyclerView for displaying stops along with their enabled alerts.
- * @param onEditButtonPressed Function that is executed each time the edit button is pressed for a stop. Takes
- *        the stop as a parameter.
  */
-class AlertRecyclerViewAdapter(private val stopsWithAlerts: List<StopAlerts>,
-                               private val onEditButtonPressed: (Stop) -> Unit) :
+class AlertRecyclerViewAdapter(private var stopsWithAlerts: List<StopAlerts>,
+                               private val alertActions: AlertActions,
+                               private var enabledStops: MutableSet<Int> = mutableSetOf()) :
     RecyclerView.Adapter<AlertRecyclerViewAdapter.StopAlertsRecyclerViewHolder>() {
 
     class StopAlertsRecyclerViewHolder(private val binding: RecyclerviewAlertsStopBinding) :
@@ -22,6 +21,19 @@ class AlertRecyclerViewAdapter(private val stopsWithAlerts: List<StopAlerts>,
         private val editButton = binding.editStopAlertsButton
         private val stopNameText = binding.alertStopName
         private val lineRecyclerView = binding.alertLineRecyclerView
+        private val alertEnabledSwitch = binding.alertEnableSwitch
+        private var onAlertEnable = fun(){}
+        private var onAlertDisable = fun(){}
+
+        init{
+            alertEnabledSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if(isChecked){
+                    onAlertEnable()
+                }else{
+                    onAlertDisable()
+                }
+            }
+        }
 
         fun bind(stopAlerts: StopAlerts){
             stopNameText.text = stopAlerts.stop.nameEL
@@ -33,6 +45,23 @@ class AlertRecyclerViewAdapter(private val stopsWithAlerts: List<StopAlerts>,
          */
         fun setOnEditButtonPressedListener(action: (View) -> Unit){
             editButton.setOnClickListener(action)
+        }
+
+        fun setOnAlertEnabledAction(action: () -> Unit){
+            onAlertEnable = action
+        }
+
+        fun setOnAlertDisabledAction(action: () -> Unit){
+            onAlertDisable = action
+        }
+
+        fun setToggle(enabled: Boolean){
+            alertEnabledSwitch.isChecked = enabled
+        }
+
+        fun resetCallbacks(){
+            onAlertEnable = fun(){}
+            onAlertDisable = fun(){}
         }
     }
 
@@ -48,9 +77,35 @@ class AlertRecyclerViewAdapter(private val stopsWithAlerts: List<StopAlerts>,
 
     override fun onBindViewHolder(holder: StopAlertsRecyclerViewHolder, position: Int) {
         // Make the edit button call the onEditButtonPressed function with the corresponding stop as an argument.
+        val currentStopWithAlerts = stopsWithAlerts[position]
+        holder.setToggle(currentStopWithAlerts.stop.stopId in enabledStops)
         holder.setOnEditButtonPressedListener {
-            onEditButtonPressed(stopsWithAlerts[position].stop)
+            alertActions.onStopEditButtonPressed(currentStopWithAlerts.stop)
+        }
+        holder.setOnAlertEnabledAction {
+            enabledStops.add(currentStopWithAlerts.stop.stopId)
+            alertActions.onStopAlertsEnabled(currentStopWithAlerts)
+        }
+        holder.setOnAlertDisabledAction {
+            enabledStops.remove(currentStopWithAlerts.stop.stopId)
+            alertActions.onStopAlertsDisabled(currentStopWithAlerts)
         }
         holder.bind(stopsWithAlerts[position])
+    }
+
+    override fun onViewRecycled(holder: StopAlertsRecyclerViewHolder) {
+        // When view is recycled clear all callbacks in order to avoid calling them when setToggle is called
+        // by onBindViewHolder
+        holder.resetCallbacks()
+    }
+
+    fun setStopsWithAlerts(newStopsWithAlerts: List<StopAlerts>){
+        stopsWithAlerts = newStopsWithAlerts
+        notifyDataSetChanged()
+    }
+
+    fun setEnabledStops(newEnabledStops: Set<Int>){
+        enabledStops = newEnabledStops.toMutableSet()
+        notifyDataSetChanged()
     }
 }

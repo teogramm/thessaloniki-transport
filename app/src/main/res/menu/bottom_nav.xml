@@ -2,5 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="@string/lines" android:icon="@drawable/ic_bus_black_24dp" android:id="@+id/lineDisplayFragment"/>
     <item android:title="@string/home" android:icon="@drawable/ic_home_black_24dp" android:id="@+id/homeFragment"/>
-    <item android:title="@string/notifications" android:icon="@drawable/ic_notifications_black_24dp"/>
+    <item
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/settings" />
 </menu>

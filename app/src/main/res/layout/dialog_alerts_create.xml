@@ -25,7 +25,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:labelFor="@+id/notificationMinutesInput"
-        android:text="@string/notificationMinutes"
+        android:text="@string/notificationMinutesPrompt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,8 +58,16 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/deleteButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete" />
+
+        <Button
             android:id="@+id/cancelButton"
-            style="@style/Widget.AppCompat.Button"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -67,7 +75,7 @@
 
         <Button
             android:id="@+id/okButton"
-            style="@style/Widget.AppCompat.Button"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
