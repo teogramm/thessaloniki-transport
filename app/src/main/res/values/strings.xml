@@ -24,4 +24,6 @@
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <string name="addNotifiaction">Add Notification</string>
+    <string name="liveArrivalsNotificationChannelName">Bus Arrival Notifications</string>
+    <string name="persistentNotificationChannelName">Persistent Indicator</string>
 </resources>
