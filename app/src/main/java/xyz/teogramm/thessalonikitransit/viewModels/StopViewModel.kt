@@ -80,7 +80,8 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
         }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        // Do not cache the arrival times
+        started = SharingStarted.WhileSubscribed(0,0),
         initialValue = emptyMap()
     )
 
