@@ -56,7 +56,9 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
         _readyForNewStop.value = true
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        // We always want to fetch the latest routes with lines for the stop so start this eagerly.
+        // Also alertDialogUiState depends on this being set to Eagerly since it uses its value without collecting.
+        started = SharingStarted.Eagerly,
         initialValue = emptyList()
     )
 
@@ -124,9 +126,9 @@ class StopViewModel @Inject constructor(private val staticRepository: StaticData
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val alertDialogUiState = _stopAlerts.transformLatest { stopAlerts ->
+    val alertDialogUiState = _stopAlerts.combineTransform(_readyForNewStop) { stopAlerts, ready ->
         emit(null)
-        if(stopAlerts != null) {
+        if(stopAlerts != null && ready) {
             // Each stop has at most one threshold entry
             val notificationThreshold = stopAlerts.stop.notificationThreshold.firstOrNull()
             // Get all the lines passing through this stop. Since multiple routes might correspond to a single line
