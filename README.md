@@ -11,6 +11,10 @@ Current features include:
 Planned features include:
 * Live map of vehicle locations.
 
+## Building
+
+Before building create a `local.properties` file. Inside it add a line containing `MAPS_API_KEY=<your Google Maps API Key>`.
+
 ## Screenshots
 (The current state of the app might be slightly different than the screenshots)
 
