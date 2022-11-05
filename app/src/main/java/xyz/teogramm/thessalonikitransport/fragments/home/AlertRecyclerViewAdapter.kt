@@ -98,13 +98,18 @@ class AlertRecyclerViewAdapter(private var stopsWithAlerts: List<StopAlerts>,
         holder.resetCallbacks()
     }
 
-    fun setStopsWithAlerts(newStopsWithAlerts: List<StopAlerts>){
-        stopsWithAlerts = newStopsWithAlerts
-        notifyDataSetChanged()
-    }
-
-    fun setEnabledStops(newEnabledStops: Set<Int>){
-        enabledStops = newEnabledStops.toMutableSet()
+    /**
+     * Modify the data displayed in the RecyclerView
+     * @param newStopsWithAlerts New list of [StopAlerts] to display
+     * @param newEnabledStops New set of stop IDs which have alerts enabled
+     */
+    fun setData(newStopsWithAlerts: List<StopAlerts>? = null, newEnabledStops: Set<Int>? = null){
+        if(newStopsWithAlerts != null){
+            stopsWithAlerts = newStopsWithAlerts
+        }
+        if(newEnabledStops != null){
+            enabledStops = newEnabledStops.toMutableSet()
+        }
         notifyDataSetChanged()
     }
 }

@@ -75,7 +75,7 @@ class HomeFragment: Fragment() {
             alertService.setListener(object: AlertService.AlertServiceListener{
                 override fun onServiceStopped() {
                     Log.d("HomeFragment","Emptied Enabled Stops")
-                    alertRecyclerViewAdapter.setEnabledStops(emptySet())
+                    alertRecyclerViewAdapter.setData(newEnabledStops = emptySet())
                 }
             })
             alertServiceConnected = true
@@ -118,7 +118,8 @@ class HomeFragment: Fragment() {
                     }else{
                         Log.d("HomeFragment", "Alert Service disconnected")
                     }
-                    alertRecyclerViewAdapter.setStopsWithAlerts(uiState.alerts)
+                    alertRecyclerViewAdapter.setData(newStopsWithAlerts = uiState.alerts,
+                        newEnabledStops = enabledAlerts)
                 }
             }
         }
