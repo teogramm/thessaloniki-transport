@@ -17,7 +17,7 @@
 
     <string name="search_hint">Search lines and stops</string>
 
-    <string name="preferenceFileName" translatable="false">xyz.teogramm.thessalonikitransit.prefs</string>
+    <string name="preferenceFileName" translatable="false">xyz.teogramm.thessalonikitransport.prefs</string>
     <string name="preferenceDbInitializedKey" translatable="false">dbinit</string>
     <string name="notificationMinutesPrompt">Notification Minutes</string>
     <string name="selectRoutesPrompt">Select routes to monitor</string>

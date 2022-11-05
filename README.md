@@ -1,6 +1,6 @@
-# Thessaloniki Transit
+# Thessaloniki Transport
 
-Thessaloniki Transit is an Android application offering information about buses in Thessaloniki. The application is currently work
+Thessaloniki Transport is an Android application offering information about buses in Thessaloniki. The application is currently work
 in progress and some things might not be polished, however the main functionality is present.
 
 Current features include:

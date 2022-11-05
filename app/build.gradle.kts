@@ -13,11 +13,11 @@ android {
     defaultConfig {
         compileSdk= 33
         buildToolsVersion = "30.0.3"
-        applicationId = "xyz.teogramm.thessalonikitransit"
+        applicationId = "xyz.teogramm.thessalonikitransport"
         minSdk = 28
         targetSdk = 33
         versionCode = 1
-        versionName = "0.1"
+        versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -40,7 +40,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    namespace = "xyz.teogramm.thessalonikitransit"
+    namespace = "xyz.teogramm.thessalonikitransport"
 }
 
 dependencies {

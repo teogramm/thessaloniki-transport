@@ -5,30 +5,30 @@
             android:id="@+id/nav_graph" app:startDestination="@id/homeFragment">
 
     <fragment android:id="@+id/onboardingFragment"
-              android:name="xyz.teogramm.thessalonikitransit.fragments.OnboardingFragment"
+              android:name="xyz.teogramm.thessalonikitransport.fragments.OnboardingFragment"
               android:label="OnboardingFragment"
               tools:layout="@layout/fragment_onboarding">
         <action android:id="@+id/action_onboardingFragment_to_homeFragment" app:destination="@id/homeFragment"/>
     </fragment>
-    <fragment android:id="@+id/homeFragment" android:name="xyz.teogramm.thessalonikitransit.fragments.home.HomeFragment"
+    <fragment android:id="@+id/homeFragment" android:name="xyz.teogramm.thessalonikitransport.fragments.home.HomeFragment"
               android:label="HomeFragment" tools:layout="@layout/fragment_home">
         <action android:id="@+id/action_homeFragment_to_lineDisplayFragment" app:destination="@id/lineDisplayFragment"/>
     </fragment>
     <fragment android:id="@+id/lineDisplayFragment"
-              android:name="xyz.teogramm.thessalonikitransit.fragments.lineDisplay.LineDisplayFragment"
+              android:name="xyz.teogramm.thessalonikitransport.fragments.lineDisplay.LineDisplayFragment"
               android:label="LineDisplayFragment"
               tools:layout="@layout/fragment_line_display">
         <action android:id="@+id/action_lineDisplayFragment_to_routeDetailsFragment"
                 app:destination="@id/routeDetailsFragment"/>
     </fragment>
     <fragment android:id="@+id/routeDetailsFragment"
-              android:name="xyz.teogramm.thessalonikitransit.fragments.routeDetails.RouteDetailsFragment"
+              android:name="xyz.teogramm.thessalonikitransport.fragments.routeDetails.RouteDetailsFragment"
               android:label="RouteDetailsFragment"
               tools:layout="@layout/fragment_route_details">
         <action android:id="@+id/action_routeDetailsFragment_to_stopDetailsFragment"
                 app:destination="@id/stopDetailsFragment"/>
     </fragment>
     <fragment android:id="@+id/stopDetailsFragment"
-              android:name="xyz.teogramm.thessalonikitransit.fragments.stopDetails.StopDetailsFragment"
+              android:name="xyz.teogramm.thessalonikitransport.fragments.stopDetails.StopDetailsFragment"
               android:label="StopDetailsFragment"/>
 </navigation>
