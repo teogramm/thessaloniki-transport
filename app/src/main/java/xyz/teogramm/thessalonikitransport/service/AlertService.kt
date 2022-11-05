@@ -12,6 +12,9 @@ import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
@@ -29,7 +32,7 @@ import javax.inject.Inject
  * than the configured threshold.
  */
 @AndroidEntryPoint
-class AlertService: Service() {
+class AlertService: LifecycleService() {
 
     companion object{
         // TODO: Maybe move these to AlertServiceActions
@@ -143,11 +146,13 @@ class AlertService: Service() {
             }
         }
     }
-    override fun onBind(intent: Intent?): IBinder {
+    override fun onBind(intent: Intent): IBinder {
+        super.onBind(intent)
         return binder
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         val action = intent?.action
         if(action!= null){
             when(AlertServiceActions.valueOf(action)){
